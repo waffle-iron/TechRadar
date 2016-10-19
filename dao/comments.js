@@ -9,6 +9,53 @@ var DEFAULT_PAGE_SIZE = 10;
 var Comments = function () {
 };
 
+Comments.getById = function(commentId, done) {
+    var sql = `SELECT * FROM comments WHERE id=$1`;
+    
+    dbhelper.query(sql, [commentId],
+        function (results) {
+            if (results.length != 1) {
+                done(null);
+            } else {
+                done(results[0]);
+            }
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+        });
+}
+
+/**
+ * Update a comment
+ * @param commentId ID of the comment that will be modified 
+ * @param text Comment text to add
+ * @param software_version_id ID of the version of technology related to this comment
+ * @param done function to call with the results
+ */
+Comments.update = function (commentId, text, software_version_id, done) {
+    var versionColumn = "";
+    var params = [commentId, text];
+
+    // add the optional software_version_id param if it's not empty
+    if(software_version_id != null && software_version_id.length > 0) {
+        versionColumn = ", software_version_id=$3";
+        params.push(software_version_id);
+    }
+
+    var sql = `UPDATE comments SET text=$2 ` + versionColumn + 
+        ` WHERE id=$1`;
+
+    dbhelper.query(sql, params,
+        function (result) {
+            done(true);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+        });
+}
+
 /**
  * Get a pge of comments for the given technology
  *
@@ -88,6 +135,7 @@ Comments.getTotalNumberCommentsForTechnologies = function (done) {
  * @param technology Technology ID that the comment should be added to
  * @param text Comment text to add
  * @param userid User ID adding the comment
+ * @param software_version_id ID of the version of technology related to this comment
  * @param done function to call with the results
  */
 Comments.add = function (technology, text, userid, software_version_id, done) {

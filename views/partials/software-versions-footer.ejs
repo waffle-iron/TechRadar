@@ -98,6 +98,11 @@ function setupVersionDropdowns(){
         versions.forEach(function(version) {
           addVersionOption(dropdown, version.id, version.name);
         });
+      // if this dropdown is used to edit a comment
+        <% if (typeof comment != "undefined") { %>
+          // select the version currently assigned to the comment
+          dropdown.val(<%= comment.software_version_id %>);
+        <% } %>
       });
     });
 }
