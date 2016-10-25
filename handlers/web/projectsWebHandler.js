@@ -1,4 +1,5 @@
 var projects = require('../../dao/projects');
+var tags = require('../../dao/tag');
 var technology = require('../../dao/technology');
 
 var ProjectsWebHandler = function () {
@@ -8,9 +9,49 @@ ProjectsWebHandler.add = function (req, res) {
     res.render('pages/admin/addProject', {user: req.user});
 };
 
-ProjectsWebHandler.edit = function (req, res) {
+ProjectsWebHandler.editTags = function (req, res) {
     req.checkParams('projectId', 'Invalid project id').isInt();
 
+    var errors = req.validationErrors();
+    if (errors) {
+        res.redirect('/error');
+        return;
+    }
+
+    projects.findById(req.params.projectId, function (error, project) {
+        tags.getForProject(req.params.projectId, function (tags, error) {
+            if (error) {
+                res.redirect('/error');
+                return;
+            } else {
+                res.render('pages/editTags', {user: req.user, tags: tags, project: project});
+            }
+        });
+    });
+};
+
+ProjectsWebHandler.attachTags = function (req, res) {
+    req.checkParams('projectId', 'Invalid project id').isInt();
+
+    var errors = req.validationErrors();
+    if (errors) {
+        res.redirect('/error');
+        return;
+    }
+
+    projects.findById(req.params.projectId, function (error, project) {
+        tags.getForProject(req.params.projectId, function (tags, error) {
+            if (error) {
+                res.redirect('/error');
+                return;
+            } else {
+                res.render('pages/attachTags', {user: req.user, tags: tags, project: project});
+            }
+        });
+    });
+};
+
+ProjectsWebHandler.edit = function (req, res) {
     var errors = req.validationErrors();
     if (errors) {
         res.redirect('/error');

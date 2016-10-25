@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <% include ../partials/head.ejs %>
+
+    <script type="text/javascript" src="/utils.js" charset="utf-8"></script>
+</head>
+
+<body>
+
+<% include ../partials/menu.ejs %>
+
+<div class="container bs-docs-container">
+    <div class="col-md-12">
+        <ol class="breadcrumb" style="margin-top: 10px;">
+            <li><a href="/">Home</a></li>
+            <li><a href="/project/<%= project.id %>"><%= project.name %></a></li>
+            <li class="active">Tags</li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div id="custom-toolbar">
+                <div class="form-inline" role="form">
+                    <a href="/project/<%= project.id %>/tags/attach" class="btn btn-success">
+                        <i class="glyphicon glyphicon-plus"></i>
+                        Attach more
+                    </a>
+                    <button id="deleteBtn" class="btn btn-danger" disabled="">
+                        <i class="glyphicon glyphicon-remove"></i>
+                        Detach selected
+                    </button>
+                </div>
+            </div>
+            <table id="results"></table>
+        </div>
+    </div>
+
+</div><!-- /.container -->
+<% include ../partials/footer.ejs %>
+
+<script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script>
+    $table = $('#results');
+    $deleteBtn = $('#deleteBtn')
+
+    $table.bootstrapTable({
+        method: 'get',
+        url: '/api/project/<%= project.id %>/tags',
+        cache: false,
+        striped: true,
+        escape: true,
+        idField: 'id',
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+        showPaginationSwitch: true,
+        pagination: true,
+        columns: [{
+            field:'state',
+            checkbox:'true'
+        }, {
+            field: 'id',
+            title: 'Tag ID',
+            visible: false
+        }, {
+            field: 'linkid',
+            title: 'Tag-Project link ID',
+            visible: false
+        }, {
+            field: 'name',
+            title: 'Name',
+            sortable: true
+        }]
+    });
+
+    $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+        $deleteBtn.prop('disabled', !$table.bootstrapTable('getSelections').length);
+    });
+
+    $deleteBtn.click( function() {
+        var r = confirm("Are you sure you want to detach the selected tags");
+        if (r == false) {
+            return;
+        }
+
+        var data = {};
+        data.tags = getLinkIdSelections();
+
+        $.ajax({
+            type: "DELETE",
+            url: '/api/tags/project',
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            complete: function(result){
+                if (result.success) {
+                    $table.bootstrapTable('refresh' );
+                    $deleteBtn.prop('disabled', true );
+                } else {
+                    alert("There was an error detaching tags");
+                }
+            }
+        });
+    });;
+
+    function getLinkIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.linkid
+        });
+    }
+
+</script>
+
+</body>
+</html>
