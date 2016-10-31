@@ -3,10 +3,12 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var technology = require('../../../dao/technology.js');
+var usedThisTechDao = require('../../../dao/usedThisTechnology.js');
+var projectsDao = require('../../../dao/projects.js');
 var webTechnologies = require('../../../handlers/web/technologiesWebHandler.js');
 
 describe("Technologies web handler", function() {
-    var req, res;
+    var req, res, technologyFromDb;
 
     beforeEach(function() {
         res = {};
@@ -18,14 +20,23 @@ describe("Technologies web handler", function() {
         };
         req.checkParams = function () {}; // this method normally comes from express middleware
         req.validationErrors = function () {}; // this method normally comes from express middleware
-        var methods = { 
+        technologyFromDb = {id: 345, name: "Tech name"};
+
+        sinon.stub(technology, 'getById', function(userId, num, cb){
+            cb(technologyFromDb);
+        });
+
+        sinon.stub(req, 'checkParams').returns({ 
             isInt: sinon.stub()
-        }
-        sinon.stub(req, 'checkParams').returns(methods);
+        });
+
+        sinon.stub(req, 'validationErrors').returns(false);
+
     });
 
     afterEach(function() {
-        req.checkParams.restore();
+        technology.getById.restore();
+        req.validationErrors.restore();
     });
 
     describe("listTechnologies", function() {
@@ -33,7 +44,7 @@ describe("Technologies web handler", function() {
             webTechnologies.listTechnologies(req, res);
 
             sinon.assert.calledOnce(res.render);
-            expect(res.render.args[0][0]).that.is.a('string').to.contain('listTechnologies');
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('listTechnologies'); 
         });
     });
     
@@ -57,45 +68,246 @@ describe("Technologies web handler", function() {
     
     describe("edit", function() {
         it("should render edit technology page", function() {
-
-            sinon.stub(technology, 'getById', function(userId, num, cb){
-                cb({/* dummy technology object */});
-            });
-
             webTechnologies.edit(req, res);
 
             sinon.assert.calledOnce(res.render);
             expect(res.render.args[0][0]).that.is.a('string').to.contain('editTechnology');
-            
-            technology.getById.restore();
         });
 
         it("should NOT render edit technology page if no technology was found", function() {
-
+            technology.getById.restore(); // get rid of the default stub created in beforeEach(){...}
             sinon.stub(technology, 'getById', function(userId, num, cb){
                 cb(null /* missing technology object */);
             });
+             
+            webTechnologies.edit(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+        
+        it("should NOT render edit technology page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
 
             webTechnologies.edit(req, res);
 
             sinon.assert.notCalled(res.render);
-            
-            technology.getById.restore();
+
         });
 
-        it("should NOT render edit technology page if validation failed", function() {
-
-            sinon.stub(req, 'validationErrors').returns(true);
-            sinon.stub(technology, 'getById', function(userId, num, cb){
-                cb({/* dummy technology object */});
-            });
-
+        it("should pass the technology object to the rendered view", function() {
             webTechnologies.edit(req, res);
 
-            sinon.assert.notCalled(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+    });
+    
+    describe("getVersions", function() {
+        it("should render edit versions page", function() {
+            webTechnologies.getVersions(req, res);
 
-            technology.getById.restore();
-            req.validationErrors.restore();
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('editVersions');
+        });
+        
+        it("should NOT render editVersions page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.getVersions(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.getVersions(req, res);
+
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+
+    });
+    describe("getTechnology", function() {
+        it("should render technology page", function() {
+            webTechnologies.getTechnology(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('technology');
+        });
+
+        it("should NOT render technology page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.getTechnology(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.getTechnology(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+    });
+    
+    describe("getUsers", function() {
+        beforeEach(function() {
+            sinon.stub(usedThisTechDao, 'getUsersForTechnology', function(userId, num, cb){
+                cb({});
+            });
+        });
+
+        afterEach(function() {
+            usedThisTechDao.getUsersForTechnology.restore();
+        });
+
+        it("should render technologyUsers page", function() {
+            webTechnologies.getUsers(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('technologyUsers');
+        });
+
+        it("should NOT render technologyUsers page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.getUsers(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should NOT render technologyUsers page if no technology was found", function() {
+            technology.getById.restore(); // get rid of the default stub created in beforeEach(){...}
+            sinon.stub(technology, 'getById', function(userId, num, cb){
+                cb(null /* missing technology object */);
+            });
+             
+            webTechnologies.getUsers(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+        
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.getUsers(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+    });
+
+    describe("getStatusHistory", function() {
+        it("should render status history page", function() {
+            webTechnologies.getStatusHistory(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('statushistory');
+        });
+
+        it("should NOT render status history page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.getStatusHistory(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.getStatusHistory(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+    });
+
+    describe("getVotes", function() {
+        it("should render vote history page", function() {
+            webTechnologies.getVotes(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('votehistory');
+        });
+
+        it("should NOT render vote history page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.getVotes(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.getVotes(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+    });
+
+    describe("updateStatus", function() {
+        it("should render updateStatus page", function() {
+            webTechnologies.updateStatus(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('updateStatus');
+        });
+
+        it("should NOT render updateStatus page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.updateStatus(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.updateStatus(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
+        });
+    });
+
+    describe("addProject", function() {
+        beforeEach(function() {
+            sinon.stub(projectsDao, 'getAllForTechnology', function(techid, cb){
+                cb({});
+            });
+            sinon.stub(projectsDao, 'getAll', function(cb){
+                cb({filter: sinon.stub()});
+            });
+        });
+
+        afterEach(function() {
+            projectsDao.getAllForTechnology.restore();
+            projectsDao.getAll.restore();
+        });
+
+        it("should render addProject page", function() {
+            webTechnologies.addProject(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][0]).that.is.a('string').to.contain('addProject');
+        });
+
+        it("should NOT render addProject page if validation failed", function() {
+            req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
+            sinon.stub(req, 'validationErrors').returns(true);
+
+            webTechnologies.addProject(req, res);
+
+            sinon.assert.notCalled(res.render);
+        });
+
+        it("should pass the technology object to the rendered view", function() {
+            webTechnologies.addProject(req, res);
+
+            sinon.assert.calledOnce(res.render);
+            expect(res.render.args[0][1]).to.contain({'technology': technologyFromDb});
         });
     });
 });
