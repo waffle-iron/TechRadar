@@ -20,21 +20,21 @@ CommentApiHandler.addComment = function (req, res) {
 };
 
 CommentApiHandler.updateComment = function (req, res) {
-    comments.update(
-        sanitizer(req.body.commentId),
-        sanitizer(req.body.comment),
-        sanitizer(req.body.software_version_id),
-
-        function (result, error) {
-            comments.getById(sanitizer(req.body.commentId), function(comment) {
-                // if not the owner of this comment and not an admin
-                if (comment.userid != req.user.id && req.user.role != 0) {
-                    result = false;
-                    error = "Only admins can edit comments created by other users";
-                }
-                apiutils.handleResultSet(res, result, error);
+    comments.getById(sanitizer(req.body.commentId), function(comment) {
+        // if not the owner of this comment and not an admin
+        if (comment.userid != req.user.id && req.user.role != 0) {
+            var error = "Only admins can edit comments created by other users";
+            apiutils.handleResultSet(res, false, error);
+        } else {
+            comments.update(
+                sanitizer(req.body.commentId),
+                sanitizer(req.body.comment),
+                sanitizer(req.body.software_version_id),
+                function(result, error) {
+                    apiutils.handleResultSet(res, result, error);
             });
-        });
+        }
+    });
 };
 
 CommentApiHandler.deleteComment = function (req, res) {
