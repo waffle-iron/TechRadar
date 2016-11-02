@@ -13,7 +13,7 @@
                     <div class="comment-user"><i class="fa fa-user"></i> <%= comment.displayname %>
 
                         <span class="pull-right">
-                            <% if ( user.username == comment.username || user.admin ) { %>
+                            <% if ( user.username === comment.username || user.admin ) { %>
                             <a class="btn btn-default" title="Edit" href="/comments/update/<%= comment.id %>"> 
                                 <span class="glyphicon glyphicon-edit selectable"></span>
                             </a>

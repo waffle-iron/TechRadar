@@ -14,7 +14,7 @@ Comments.getById = function(commentId, done) {
     
     dbhelper.query(sql, [commentId],
         function (results) {
-            if (results.length != 1) {
+            if (results.length !== 1) {
                 done(null);
             } else {
                 done(results[0]);

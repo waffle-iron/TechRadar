@@ -32,7 +32,7 @@ CommentsWebHandler.update = function (req, res) {
 
     comments.getById(req.params.commentId, function(comment) {
         technology.getById(req.user.id, comment.technology, function (technology) {
-            res.render('pages/addComment', {technology: technology, user: req.user, comment: comment});
+            res.render('pages/updateComment', {technology: technology, user: req.user, comment: comment});
         });
     });
 };

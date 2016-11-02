@@ -37,13 +37,14 @@ getBreadcrumb = function () {
         <div class="col-md-10 col-md-offset-1" style="padding-top: 10px;">
             <form action="javascript:void(0);" method="POST">
                 <input type="hidden" name="technology" value="<%= technology.id %>">
+                <input type="hidden" name="commentId" value="<%= comment.id %>">
                 <div class="form-group">
                     <label for="comment">Comment</label>
                     <textarea class="form-control" rows="3" id="comment" name="comment"
-                              placeholder="Comment" required/></textarea>
+                              placeholder="Comment" required><%= comment.text %></textarea>
                 </div>
                 <div><% include ../partials/software-versions.ejs %></div>
-                <button type="submit" class="btn btn-default">Add comment</button>
+                <button type="submit" class="btn btn-default">Update comment</button>
             </form>
         </div>
     </div>
@@ -64,9 +65,9 @@ getBreadcrumb = function () {
         var frm = $(this);
         
         var data = serialiseForm(frm);
-
+        
         $.ajax({
-            type: "POST",
+            type: "PUT",
             url: '/api/comments',
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -76,13 +77,13 @@ getBreadcrumb = function () {
                 if (result.success) {
                     location.href = "/technology/<%= technology.id %>";
                 } else {
-                    alert("There was an error adding a comment :(");
+                    alert("There was an error updating a comment :(");
                 }
             }
         });
 
         <% if (google_id!=undefined) { %>
-        ga('send', 'event', 'Comment', 'add', '<%=technology.name%>');
+        ga('send', 'event', 'Comment', 'update', '<%=technology.name%>');
         <% } %>
     });
 

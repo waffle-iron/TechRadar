@@ -22,7 +22,7 @@ CommentApiHandler.addComment = function (req, res) {
 CommentApiHandler.updateComment = function (req, res) {
     comments.getById(sanitizer(req.body.commentId), function(comment) {
         // if not the owner of this comment and not an admin
-        if (comment.userid != req.user.id && req.user.role != 0) {
+        if (comment.userid !== req.user.id && req.user.role !== 0) {
             var error = "Only admins can edit comments created by other users";
             apiutils.handleResultSet(res, false, error);
         } else {
