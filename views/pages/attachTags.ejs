@@ -67,7 +67,7 @@
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script>
     $table = $('#results');
-    $deleteBtn = $('#deleteBtn')
+    $deleteBtn = $('#deleteBtn');
     $editBtn = $('#editBtn');
     $submitBtn = $('#submitBtn');
 
@@ -175,10 +175,10 @@
             if(msg.success) {
                 location.href = "/project/<%= project.id %>/tags";
             } else {
-                alert("Unable to update this tag. Perhaps the same tag already exists.");
+                alert("Unable to attach tags. \n" + msg.error);
             }
         }).fail(function() {
-            alert('There was an error updating tag.');
+            alert('There was an error attaching tags.');
         });
     });
 
@@ -194,9 +194,6 @@
         });
     }
 
-</script>
-
-<script>
     function addTag() {
         var tagName = prompt("Please enter the name of a new tag.");
 

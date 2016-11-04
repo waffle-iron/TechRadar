@@ -60,7 +60,7 @@ TagsApiHandler.attachTagsToProject = function (app) {
 
         var errors = req.validationErrors();
         if (errors) {
-            res.end(JSON.stringify({success: false, error: errors}));
+            apiutils.handleResultSet(res, null, errors[0].msg);
             return;
         }
         var tagIds = req.body.tags;
