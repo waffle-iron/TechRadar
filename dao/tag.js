@@ -71,7 +71,7 @@ Tag.detachFromProject = function (ids, done) {
 };
 
 /**
- * Delete a set of links of tags with projects
+ * Attach a set of tags to a project
  * @param {Number} projectId ID of the project to which the tags will be attached
  * @param {Number[]} tagIds IDs of tag-project links
  * @param done
@@ -82,14 +82,13 @@ Tag.attachToProject = function (projectId, tagIds, done) {
 
     var params = [projectId];
     params.push.apply(params, tagIds);
-    for (var i = 2; i <= tagIds.length+1; i++) {
-        // gives us (tagId, projectId) placeholders to insert after the VALUES statement
-        sql += ` ($` + i + `, $1)` 
-        if (i != tagIds.length+1) { 
-            sql+= ', ';
-        }
-    }
 
+    var placeholderPairs = tagIds.map(function(tagId, index) {
+        // gives us (tagId, projectId) placeholders to insert after the VALUES statement
+        return "($" + (index + 2) + ", $1)"; // tagId placeholders start from $2
+    });
+
+    sql += " " + placeholderPairs.join();
     sql += ` ON CONFLICT DO NOTHING`;
 
     dbhelper.query(sql, params,
@@ -131,16 +130,7 @@ Tag.delete = function (ids, done) {
  * @param done Function to call with the results
  */
 Tag.getAll = function (done) {
-    var sql = `SELECT * FROM tags`
-
-    dbhelper.query(sql, null,
-        function (results) {
-            done(results);
-        },
-        function (error) {
-            console.error(error);
-            done(null, error);
-        });
+    dbhelper.getAllFromTable("tags", done);
 };
 
 /**
