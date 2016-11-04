@@ -64,6 +64,10 @@
         showRefresh: true,
         showPaginationSwitch: true,
         pagination: true,
+        // reach the columns nested in the response data
+        responseHandler: function(res) {
+            return res.result; 
+        },
         columns: [{
             field:'state',
             checkbox:'true'

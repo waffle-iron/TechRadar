@@ -63,6 +63,7 @@
 </div><!-- /.container -->
 <% include ../partials/footer.ejs %>
 
+<script src="/shared/validators/tagValidator.js"></script>
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script>
     $table = $('#results');
@@ -82,6 +83,10 @@
         showRefresh: true,
         showPaginationSwitch: true,
         pagination: true,
+        // reach the columns nested in the response data
+        responseHandler: function(res) {
+            return res.result; 
+        },
         columns: [{
             field:'state',
             checkbox:'true'
@@ -134,8 +139,10 @@
             "Note that the name will change for all projects that already use this tag.", 
             getNameSelections()[0]);
 
-        if(data.name == null){
-            return false;
+        var validationResult = TagValidator.validateTagName(data.name);
+        if(!validationResult.valid) {
+            alert(validationResult.message);
+            return;
         }
         
         $.ajax({
@@ -192,6 +199,13 @@
 <script>
     function addTag() {
         var tagName = prompt("Please enter the name of a new tag.");
+
+        var validationResult = TagValidator.validateTagName(tagName);
+        if(!validationResult.valid) {
+            alert(validationResult.message);
+            return;
+        }
+
         $.ajax({
             method: "POST",
             contentType: "application/json",

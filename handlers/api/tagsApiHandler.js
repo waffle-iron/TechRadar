@@ -2,40 +2,44 @@ var tag = require('../../dao/tag.js');
 
 var sanitizer = require('sanitize-html');
 var apiutils = require('./apiUtils.js');
+var tagValidator = require('../../shared/validators/tagValidator.js');
 
 var TagsApiHandler = function () {
 };
 
 TagsApiHandler.getTags = function (req, res) {
-    tag.getAll(function (result) {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(result));
+    tag.getAll(function (result, error) {
+        apiutils.handleResultSet(res, result, error);
     });
 };
 
 TagsApiHandler.getForProject = function (req, res) {
     var projectId = sanitizer(req.params.projectId);
-    tag.getForProject(projectId, function (result) {
-        res.writeHead(200, { "Content-Type": "application/json" });
-        res.end(JSON.stringify(result));
+    tag.getForProject(projectId, function (result, error) {
+        apiutils.handleResultSet(res, result, error);
     });
 };
 
 TagsApiHandler.addTag = function(app) {
     return function (req, res) {
-        req.checkBody('name', "Name cannot be blank.").notEmpty();
 
-        var errors = req.validationErrors();
-        if (errors) {
-            res.end(JSON.stringify({success: false, error: errors}));
-            return;
-        }
+    var tagName = sanitizer(req.body.name);
 
-        tag.add(
-            sanitizer(req.body.name),
-            function (result, error) {
-                apiutils.handleResultSet(res, result, error);
-        });
+    var validationResult = tagValidator.validateTagName(tagName);
+    if (!validationResult.valid) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        var data = {};
+        data.error = validationResult.message;
+        data.success = false;
+        res.end(JSON.stringify(data));
+        return;
+    }
+
+    tag.add(
+        tagName,
+        function (result, error) {
+            apiutils.handleResultSet(res, result, error);
+    });
     }
 };
 
@@ -81,9 +85,19 @@ TagsApiHandler.detachTagsFromProject = function (app) {
 TagsApiHandler.updateTag = function (app) {
     return function (req, res) {
         var tagId = sanitizer(req.body.tag);
-        var name = sanitizer(req.body.name);
+        var tagName = sanitizer(req.body.name);
 
-        tag.update(tagId, name, function (result, error) {
+        var validationResult = tagValidator.validateTagName(tagName);
+        if (!validationResult.valid) {
+            res.writeHead(200, {"Content-Type": "application/json"});
+            var data = {};
+            data.error = validationResult.message;
+            data.success = false;
+            res.end(JSON.stringify(data));
+            return;
+        }
+
+        tag.update(tagId, tagName, function (result, error) {
             apiutils.handleResultSet(res, result, error);
         });
     }
