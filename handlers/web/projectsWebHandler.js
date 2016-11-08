@@ -9,7 +9,7 @@ ProjectsWebHandler.add = function (req, res) {
     res.render('pages/admin/addProject', {user: req.user});
 };
 
-ProjectsWebHandler.editTags = function (req, res) {
+ProjectsWebHandler.reassignTags = function (req, res) {
     req.checkParams('projectId', 'Invalid project id').isInt();
 
     var errors = req.validationErrors();
@@ -19,35 +19,20 @@ ProjectsWebHandler.editTags = function (req, res) {
     }
 
     projects.findById(req.params.projectId, function (error, project) {
-        tags.getForProject(req.params.projectId, function (tags, error) {
+        tags.getAllWithOptionalProjectId(req.params.projectId, function (tags, error) {
             if (error) {
                 res.redirect('/error');
                 return;
             } else {
-                res.render('pages/editTags', {user: req.user, tags: tags, project: project});
+                res.render('pages/reassignTags', {user: req.user, tags: tags, project: project});
             }
         });
     });
 };
 
-ProjectsWebHandler.attachTags = function (req, res) {
-    req.checkParams('projectId', 'Invalid project id').isInt();
-
-    var errors = req.validationErrors();
-    if (errors) {
-        res.redirect('/error');
-        return;
-    }
-
-    projects.findById(req.params.projectId, function (error, project) {
-        tags.getForProject(req.params.projectId, function (tags, error) {
-            if (error) {
-                res.redirect('/error');
-                return;
-            } else {
-                res.render('pages/attachTags', {user: req.user, tags: tags, project: project});
-            }
-        });
+ProjectsWebHandler.editTags = function (req, res) {
+    tags.getAll(function (tags) {
+        res.render('pages/editTags', {user: req.user, tags: tags});
     });
 };
 

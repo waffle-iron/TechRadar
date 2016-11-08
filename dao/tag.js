@@ -47,20 +47,15 @@ Tag.update = function (tagId, name, done) {
 };
 
 /**
- * Delete a set of links of tags with projects
- * @param ids Ids of tag-project links
+ * Delete all links of tags with a project
+ * @param {Number} projectId ID of the project from which the tags will be detached
  * @param done
  */
-Tag.detachFromProject = function (ids, done) {
+Tag.detachAllFromProject = function (projectId, done) {
 
-    var params = [];
-    for (var i = 1; i <= ids.length; i++) {
-        params.push('$' + i);
-    }
+    var sql = "DELETE FROM tag_project_link WHERE projectid=$1";
 
-    var sql = "DELETE FROM tag_project_link WHERE id IN (" + params.join(',') + "  )";
-
-    dbhelper.query(sql, ids,
+    dbhelper.query(sql, [projectId],
         function (result) {
             done(true);
         },
@@ -134,13 +129,16 @@ Tag.getAll = function (done) {
 };
 
 /**
- * Get all tags for a project
+ * Get all tags and indicate which tags belong to the project
+ * @param {Number} projectId ID of the project
  * @param done Function to call with the results
  */
-Tag.getForProject = function (projectId, done) {
-    var sql = `SELECT t.*, tpl.id AS linkid FROM tags t
-        INNER JOIN tag_project_link tpl ON tpl.tagid=t.id
-        WHERE tpl.projectid=$1`;
+Tag.getAllWithOptionalProjectId = function (projectId, done) {
+    // If a tag doesn't belong to the project, the projectid field is empty
+    var sql = `SELECT t.*, tpl.projectid, tpl.id AS linkid FROM tags t
+        LEFT JOIN tag_project_link tpl ON tpl.tagid=t.id AND tpl.projectid=$1
+        ORDER BY projectid, name
+    `;
 
     dbhelper.query(sql, [projectId],
         function (results) {
@@ -149,7 +147,21 @@ Tag.getForProject = function (projectId, done) {
         function (error) {
             console.error(error);
             done(null, error);
-        });
+    });
+};
+
+/**
+ * Attaches selected tags to a project, detaches all other tags.
+ * @param {Number} projectId ID of the project to which the tags will be reassigned
+ */
+Tag.reassignToProject = function (projectId, tagIds, done) {
+    Tag.detachAllFromProject(projectId, function(results) {
+        if(tagIds.length > 0) {
+            Tag.attachToProject(projectId, tagIds, done);
+        } else {
+            done(results, null);
+        }
+    });
 };
 
 

@@ -36,19 +36,17 @@ ProjectRoutes.createRoutes = function (self) {
     /**
      * Show project tags
      */
-    self.app.get('/project/:projectId/tags', security.isAuthenticated, handler.editTags);
-
-    /**
-     * Select tags and attach them to a project
-     */
-    self.app.get('/project/:projectId/tags/attach', security.isAuthenticated, handler.attachTags);
+    self.app.get('/project/:projectId/tags', security.isAuthenticated, handler.reassignTags);
 
     /**
      * List projects page
      */
     self.app.get('/projects', security.isAuthenticated, handler.list);
 
-
+    /**
+     * Edit all tags
+     */
+    self.app.get('/projects/tags/edit', security.isAuthenticated, handler.editTags);
 }
 
 

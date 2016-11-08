@@ -21,7 +21,7 @@
     <div class="col-md-12">
         <ol class="breadcrumb" style="margin-top: 10px;">
             <li><a href="/">Home</a></li>
-            <li><a href="/project/<%= project.id %>"><%= project.name %></a></li>
+            <li><a href="/projects">Projects</a></li>
             <li class="active">Tags</li>
         </ol>
     </div>
@@ -30,13 +30,17 @@
         <div class="col-md-10 col-md-offset-1">
             <div id="custom-toolbar">
                 <div class="form-inline" role="form">
-                    <a href="/project/<%= project.id %>/tags/attach" class="btn btn-success">
+                    <a href="#" onclick="addTag()" class="btn btn-info">
                         <i class="glyphicon glyphicon-plus"></i>
-                        Attach more
+                        Create
                     </a>
+                    <button id="editBtn" class="btn btn-info" disabled="">
+                        <i class="glyphicon glyphicon-edit"></i>
+                        Edit
+                    </button>
                     <button id="deleteBtn" class="btn btn-danger" disabled="">
                         <i class="glyphicon glyphicon-remove"></i>
-                        Detach selected
+                        Delete
                     </button>
                 </div>
             </div>
@@ -47,14 +51,16 @@
 </div><!-- /.container -->
 <% include ../partials/footer.ejs %>
 
+<script src="/shared/validators/tagValidator.js"></script>
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script>
     $table = $('#results');
-    $deleteBtn = $('#deleteBtn')
+    $deleteBtn = $('#deleteBtn');
+    $editBtn = $('#editBtn');
 
     $table.bootstrapTable({
         method: 'get',
-        url: '/api/project/<%= project.id %>/tags',
+        url: '/api/tags',
         cache: false,
         striped: true,
         escape: true,
@@ -64,6 +70,7 @@
         showRefresh: true,
         showPaginationSwitch: true,
         pagination: true,
+        maintainSelected: true,
         // reach the columns nested in the response data
         responseHandler: function(res) {
             return res.result; 
@@ -73,11 +80,7 @@
             checkbox:'true'
         }, {
             field: 'id',
-            title: 'Tag ID',
-            visible: false
-        }, {
-            field: 'linkid',
-            title: 'Tag-Project link ID',
+            title: 'ID',
             visible: false
         }, {
             field: 'name',
@@ -86,22 +89,23 @@
         }]
     });
 
-    $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+    $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table pre-body.bs.table', function () {
         $deleteBtn.prop('disabled', !$table.bootstrapTable('getSelections').length);
+        $editBtn.prop('disabled', $table.bootstrapTable('getSelections').length != 1);
     });
 
     $deleteBtn.click( function() {
-        var r = confirm("Are you sure you want to detach the selected tags");
+        var r = confirm("Are you sure you want to delete the selected tags? Deleted tags will disappear from all projects.");
         if (r == false) {
             return;
         }
 
         var data = {};
-        data.tags = getLinkIdSelections();
+        data.tags = getIdSelections();
 
         $.ajax({
             type: "DELETE",
-            url: '/api/tags/project',
+            url: '/api/tags',
             contentType: "application/json",
             data: JSON.stringify(data),
             complete: function(result){
@@ -109,18 +113,77 @@
                     $table.bootstrapTable('refresh' );
                     $deleteBtn.prop('disabled', true );
                 } else {
-                    alert("There was an error detaching tags");
+                    alert("There was an error deleting category");
                 }
             }
         });
     });;
 
-    function getLinkIdSelections() {
+    $editBtn.click(function () {
+        var data = {};
+        data.tag = getIdSelections()[0];
+        data.name = prompt("Please enter a new name for this tag. " +
+            "Note that the name will change for all projects that already use this tag.", 
+            getNameSelections()[0]);
+
+        var validationResult = TagValidator.validateTagName(data.name);
+        if(!validationResult.valid) {
+            alert(validationResult.message);
+            return;
+        }
+        
+        $.ajax({
+            method: "PUT",
+            contentType: "application/json",
+            url: "/api/tag",
+            data: JSON.stringify(data)
+        }).done(function( msg ) {
+            if(msg.success) {
+                location.reload();
+            } else {
+                alert("Unable to update this tag. Perhaps the same tag already exists.");
+            }
+        }).fail(function() {
+            alert('There was an error updating tag.');
+        });
+    });
+
+    function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.linkid
+            return row.id
         });
     }
 
+    function getNameSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.name
+        });
+    }
+
+    function addTag() {
+        var tagName = prompt("Please enter the name of a new tag.");
+
+        var validationResult = TagValidator.validateTagName(tagName);
+        if(!validationResult.valid) {
+            alert(validationResult.message);
+            return;
+        }
+
+        $.ajax({
+            method: "POST",
+            contentType: "application/json",
+            url: "/api/tag",
+            data: JSON.stringify({name: tagName})
+        }).done(function( msg ) {
+            if(msg.success) {
+                location.reload();
+            } else {
+                alert("Unable to add this tag. Perhaps the same tag already exists.");
+            }
+        }).fail(function() {
+            alert('There was an error adding tag.');
+        });
+    }
 </script>
 
 </body>

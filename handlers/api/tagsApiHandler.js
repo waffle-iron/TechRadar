@@ -13,9 +13,9 @@ TagsApiHandler.getTags = function (req, res) {
     });
 };
 
-TagsApiHandler.getForProject = function (req, res) {
+TagsApiHandler.getAllWithOptionalProjectId = function (req, res) {
     var projectId = sanitizer(req.params.projectId);
-    tag.getForProject(projectId, function (result, error) {
+    tag.getAllWithOptionalProjectId(projectId, function (result, error) {
         apiutils.handleResultSet(res, result, error);
     });
 };
@@ -53,30 +53,13 @@ TagsApiHandler.deleteTags = function (app) {
     }
 };
 
-TagsApiHandler.attachTagsToProject = function (app) {
+TagsApiHandler.reassignTagsToProject = function (app) {
     return function (req, res) {
 
-        req.checkBody('tags', "tagIds can't be empty").notEmpty();
-
-        var errors = req.validationErrors();
-        if (errors) {
-            apiutils.handleResultSet(res, null, errors[0].msg);
-            return;
-        }
         var tagIds = req.body.tags;
         var projectId = sanitizer(req.params.projectId);
 
-        tag.attachToProject(projectId, tagIds, function (result, error) {
-            apiutils.handleResultSet(res, result, error);
-        });
-    }
-};
-
-TagsApiHandler.detachTagsFromProject = function (app) {
-    return function (req, res) {
-        var linkIds = req.body.tags;
-
-        tag.detachFromProject(linkIds, function (result, error) {
+        tag.reassignToProject(projectId, tagIds, function (result, error) {
             apiutils.handleResultSet(res, result, error);
         });
     }
