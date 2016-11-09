@@ -34,10 +34,6 @@
                         <i class="glyphicon glyphicon-plus"></i>
                         Create
                     </a>
-                    <button id="editBtn" class="btn btn-info" disabled="">
-                        <i class="glyphicon glyphicon-edit"></i>
-                        Edit
-                    </button>
                     <button id="deleteBtn" class="btn btn-danger" disabled="">
                         <i class="glyphicon glyphicon-remove"></i>
                         Delete
@@ -66,7 +62,32 @@
           </div>
         </div>
         <div class="modal-footer">                
-          <button id="submit-tag-btn" type="submit" class="btn btn-default">Submit</button>
+          <button type="submit" class="btn btn-default">Submit</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="editTagModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">                      
+    <div class="modal-content">
+      <form id="editTagForm" action="javascript:void(0);" method="PUT">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Edit tag</h4>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input name="id" id="edit-tagid" type="hidden" class="form-control"/>
+            <input name="name" id="edit-tag-name" type="text" class="form-control"
+                    placeholder="Tag name" autofocus required/>
+          </div>
+        </div>
+        <div class="modal-footer">                
+          <button type="submit" class="btn btn-default">Submit</button>
           <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
         </div>
       </form>
@@ -81,7 +102,6 @@
 <script>
     $table = $('#results');
     $deleteBtn = $('#deleteBtn');
-    $editBtn = $('#editBtn');
 
     $table.bootstrapTable({
         method: 'get',
@@ -111,12 +131,35 @@
             field: 'name',
             title: 'Name',
             sortable: true
+        }, {
+            field: 'edit',
+            title: 'Edit',
+            formatter: editColumnFormatter
         }]
+    });
+
+    function editColumnFormatter(value, row, index) {
+        return `<button class="btn btn-info edit-tag-btn" 
+                data-tag-name="` + row.name + `"
+                data-tagid="` + row.id + `"> 
+                    <i class="glyphicon glyphicon-edit"></i>
+                    Edit
+                </button>`;
+    }
+
+    // Fires after the table body is rendered and available in the DOM
+    $table.on('post-body.bs.table', function () {
+        $(".edit-tag-btn").click(function() {
+            var tagId = $(this).attr('data-tagid');
+            var tagName = $(this).attr('data-tag-name');
+            $('#editTagModal').modal('show');
+            $('input#edit-tag-name').val(tagName);
+            $('input#edit-tagid').val(tagId);
+        });
     });
 
     $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table pre-body.bs.table', function () {
         $deleteBtn.prop('disabled', !$table.bootstrapTable('getSelections').length);
-        $editBtn.prop('disabled', $table.bootstrapTable('getSelections').length != 1);
     });
 
     $deleteBtn.click( function() {
@@ -144,35 +187,6 @@
         });
     });;
 
-    $editBtn.click(function () {
-        var data = {};
-        data.tag = getIdSelections()[0];
-        data.name = prompt("Please enter a new name for this tag. " +
-            "Note that the name will change for all projects that already use this tag.", 
-            getNameSelections()[0]);
-
-        var validationResult = TagValidator.validateTagName(data.name);
-        if(!validationResult.valid) {
-            alert(validationResult.message);
-            return;
-        }
-        
-        $.ajax({
-            method: "PUT",
-            contentType: "application/json",
-            url: "/api/tag",
-            data: JSON.stringify(data)
-        }).done(function( msg ) {
-            if(msg.success) {
-                location.reload();
-            } else {
-                alert("Unable to update this tag. Perhaps the same tag already exists.");
-            }
-        }).fail(function() {
-            alert('There was an error updating tag.');
-        });
-    });
-
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
             return row.id
@@ -185,8 +199,41 @@
         });
     }
 
+    $("#editTagForm").unbind('submit').submit(function (event) {
+        var tagName = $("input#edit-tag-name").val();
+        var tagId = $("input#edit-tagid").val();
+        editTag(tagId, tagName);
+    });
+
+    function editTag(tagId, tagName) {
+        var validationResult = TagValidator.validateTagName(tagName);
+        if(!validationResult.valid) {
+            alert(validationResult.message);
+            return;
+        }
+
+        $.ajax({
+            method: "PUT",
+            contentType: "application/json",
+            url: "/api/tag",
+            data: JSON.stringify({tag: tagId, name: tagName})
+        }).done(function( msg ) {
+            if(msg.success) {
+                location.reload();
+            } else {
+                alert("Unable to edit this tag. Perhaps the same tag already exists.");
+            }
+        }).fail(function() {
+            alert('There was an error editing tag.');
+        });
+
+        <% if (google_id!=undefined) { %>
+            ga('send', 'event', 'Tag', 'edit', tagName);
+        <% } %>
+    }
+
     $("#addTagForm").unbind('submit').submit(function (event) {
-        var tagName = $("#new-tag-name").val();
+        var tagName = $("input#new-tag-name").val();
         addTag(tagName);
     });
 
