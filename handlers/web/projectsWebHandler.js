@@ -19,8 +19,12 @@ ProjectsWebHandler.reassignTags = function (req, res) {
     }
 
     projects.findById(req.params.projectId, function (error, project) {
-        tags.getAllWithOptionalProjectId(req.params.projectId, function (tags, error) {
-            if (error) {
+        if (error) {
+            res.redirect('/error');
+            return;
+        }
+        tags.getAllWithOptionalProjectId(req.params.projectId, function (tags, tagsError) {
+            if (tagsError) {
                 res.redirect('/error');
                 return;
             } else {
