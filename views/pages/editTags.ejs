@@ -99,6 +99,8 @@
 
 <script src="/shared/validators/tagValidator.js"></script>
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/stickyTablePageSize.js"></script>
+
 <script>
     $table = $('#results');
     $deleteBtn = $('#deleteBtn');
@@ -116,6 +118,7 @@
         showPaginationSwitch: true,
         pagination: true,
         maintainSelected: true,
+        pageSize: page_size, // declared and set in stickyTablePageSize.js 
         // reach the columns nested in the response data
         responseHandler: function(res) {
             return res.result; 

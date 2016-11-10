@@ -20,9 +20,7 @@ TagsApiHandler.getAllWithOptionalProjectId = function (req, res) {
     });
 };
 
-TagsApiHandler.addTag = function(app) {
-    return function (req, res) {
-
+TagsApiHandler.addTag = function (req, res) {
     var tagName = sanitizer(req.body.name);
 
     var validationResult = tagValidator.validateTagName(tagName);
@@ -40,50 +38,42 @@ TagsApiHandler.addTag = function(app) {
         function (result, error) {
             apiutils.handleResultSet(res, result, error);
     });
-    }
 };
 
-TagsApiHandler.deleteTags = function (app) {
-    return function (req, res) {
-        var tagIds = req.body.tags;
+TagsApiHandler.deleteTags = function (req, res) {
+    var tagIds = req.body.tags;
 
-        tag.delete(tagIds, function (result, error) {
-            apiutils.handleResultSet(res, result, error);
-        });
-    }
+    tag.delete(tagIds, function (result, error) {
+        apiutils.handleResultSet(res, result, error);
+    });
 };
 
-TagsApiHandler.reassignTagsToProject = function (app) {
-    return function (req, res) {
+TagsApiHandler.reassignTagsToProject = function (req, res) {
+    var tagIds = req.body.tags;
+    var projectId = sanitizer(req.params.projectId);
 
-        var tagIds = req.body.tags;
-        var projectId = sanitizer(req.params.projectId);
-
-        tag.reassignToProject(projectId, tagIds, function (result, error) {
-            apiutils.handleResultSet(res, result, error);
-        });
-    }
+    tag.reassignToProject(projectId, tagIds, function (result, error) {
+        apiutils.handleResultSet(res, result, error);
+    });
 };
 
-TagsApiHandler.updateTag = function (app) {
-    return function (req, res) {
-        var tagId = sanitizer(req.body.tag);
-        var tagName = sanitizer(req.body.name);
+TagsApiHandler.updateTag = function (req, res) {
+    var tagId = sanitizer(req.body.tag);
+    var tagName = sanitizer(req.body.name);
 
-        var validationResult = tagValidator.validateTagName(tagName);
-        if (!validationResult.valid) {
-            res.writeHead(200, {"Content-Type": "application/json"});
-            var data = {};
-            data.error = validationResult.message;
-            data.success = false;
-            res.end(JSON.stringify(data));
-            return;
-        }
-
-        tag.update(tagId, tagName, function (result, error) {
-            apiutils.handleResultSet(res, result, error);
-        });
+    var validationResult = tagValidator.validateTagName(tagName);
+    if (!validationResult.valid) {
+        res.writeHead(200, {"Content-Type": "application/json"});
+        var data = {};
+        data.error = validationResult.message;
+        data.success = false;
+        res.end(JSON.stringify(data));
+        return;
     }
+
+    tag.update(tagId, tagName, function (result, error) {
+        apiutils.handleResultSet(res, result, error);
+    });
 };
 
 module.exports = TagsApiHandler;
