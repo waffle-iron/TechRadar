@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <% include ../partials/head.ejs %>
+
+    <script type="text/javascript" src="/utils.js" charset="utf-8"></script>
+</head>
+
+<body>
+
+<% include ../partials/menu.ejs %>
+
+<div class="container bs-docs-container">
+    <div class="col-md-12">
+        <ol class="breadcrumb" style="margin-top: 10px;">
+            <li><a href="/">Home</a></li>
+            <li><a href="/project/<%= project.id %>"><%= project.name %></a></li>
+            <li class="active">Tags</li>
+        </ol>
+    </div>
+
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            Select tags that you would like to attach to <strong><%= project.name %></strong>.
+            Uncheck tags to deattach them from the project.
+            Click 'Reassign tags' to apply changes. 
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div id="custom-toolbar">
+                <div class="form-inline" role="form">
+                    <button id="assignBtn" class="btn btn-success">
+                        <i class="glyphicon glyphicon-ok"></i>
+                        Reassign tags
+                    </button>
+                    <a href="/projects/tags/edit" class="btn btn-info">
+                        <i class="glyphicon glyphicon-edit"></i>
+                        Edit tags 
+                    </a>
+                </div>
+            </div>
+            <table id="results"></table>
+        </div>
+    </div>
+
+</div>
+<% include ../partials/footer.ejs %>
+
+<script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script>
+    $table = $('#results');
+    $assignBtn = $('#assignBtn');
+
+    $table.bootstrapTable({
+        method: 'get',
+        url: '/api/project/<%= project.id %>/tags',
+        cache: false,
+        striped: true,
+        escape: true,
+        idField: 'id',
+        search: true,
+        showColumns: true,
+        showRefresh: true,
+        showPaginationSwitch: true,
+        pagination: true,
+        maintainSelected: true,
+        // reach the columns nested in the response data
+        responseHandler: function(res) {
+            return res.result; 
+        },
+        columns: [{
+            field:'state',
+            title: 'Attached',
+            checkbox:true,
+            sortable: true
+        }, {
+            field: 'id',
+            title: 'Tag ID',
+            visible: false
+        }, {
+            field: 'linkid',
+            title: 'Tag-Project link ID',
+            visible: false
+        }, {
+            field: 'projectid',
+            title: 'Project ID',
+            visible: false
+        }, {
+            field: 'name',
+            title: 'Name',
+            sortable: true
+        }],
+    });;
+
+    function getTagIdSelections() {
+        return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id;
+        });
+    }
+
+    $assignBtn.click(function() {
+        var data = {};
+        data.tags = getTagIdSelections();
+        data.projectId = <%= project.id %>
+
+        $.ajax({
+            method: "PUT",
+            contentType: "application/json",
+            url: "/api/project/<%= project.id %>/tags",
+            data: JSON.stringify(data)
+        }).done(function( msg ) {
+            if(msg.success) {
+                location.href = "/project/<%= project.id %>/tags";
+            } else {
+                alert("Unable to attach tags. \n" + msg.error);
+            }
+        }).fail(function() {
+            alert('There was an error attaching tags.');
+        });
+    });
+
+    var initialRun = true;
+
+    // Fires after the table body is rendered and available in the DOM
+    $table.on('post-body.bs.table', function () {
+        // prevent post-body.bs.table event from overwriting checkboxes multiple times 
+        // e.g. after uncheckAll is called
+        if (initialRun) {
+            $(this).bootstrapTable("checkBy", {field:"projectid", values:[<%= project.id %>]});
+            initialRun = false;
+        }
+    });
+
+</script>
+
+</body>
+</html>

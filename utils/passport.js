@@ -28,7 +28,7 @@ var strategyConfig = {
 };
 
 var log = bunyan.createLogger({
-  name: 'AnswerIt - passport.js',
+  name: 'TechRadar - passport.js',
   streams: [{
     stream: process.stderr,
     level: "error",
