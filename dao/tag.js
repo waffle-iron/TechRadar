@@ -84,7 +84,6 @@ Tag.attachToProject = function (projectId, tagIds, done) {
     });
 
     sql += " " + placeholderPairs.join();
-    sql += ` ON CONFLICT DO NOTHING`;
 
     dbhelper.query(sql, params,
         function (result) {
