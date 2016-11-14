@@ -71,8 +71,10 @@
 <% include ../partials/footer.ejs %>
 
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/stickyTablePageSize.js"></script>
 <script>
 
+    
     $table = $('#results');
 
     $table.bootstrapTable({
@@ -90,10 +92,15 @@
         searchOnEnterKey: true,
         showPaginationSwitch: true,
         pagination: true,
-        columns: [{
-            field: 'state',
-            checkbox: 'true'
-        }, {
+        pageSize: page_size, // declared and set in stickyTablePageSize.js 
+        columns: [
+        <% if(user.admin) { %>
+            {
+                field: 'state',
+                checkbox: 'true'
+            }, 
+        <% } %>
+        {
             field: 'id',
             title: 'ID',
             visible: false
