@@ -15,6 +15,11 @@ ApiCommentRoutes.createRoutes = function (self) {
     self.app.post('/api/comments', security.canAddComments, jsonParser, handler.addComment );
 
     /**
+     * Update a comment for a technology
+     */
+    self.app.put('/api/comments', security.canAddComments, jsonParser, handler.updateComment);
+
+    /**
      * Delete comments
      */
     self.app.delete('/api/comments', security.isAuthenticatedAdmin, jsonParser, handler.deleteComment );
