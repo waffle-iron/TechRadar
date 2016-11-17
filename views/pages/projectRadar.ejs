@@ -82,7 +82,7 @@
                     heading = technology.status;
                 %>
                 <li class="<%- (i === 0 ) ? 'active' : '' %>">
-                    <a href="#<%= technology.status %>" data-toggle="tab"><%= technology.status %></a>
+                    <a href="#<%= technology.status %>" id="tab-<%= technology.status %>" data-toggle="tab"><%= technology.status %></a>
                 </li>
                 <%
                 }

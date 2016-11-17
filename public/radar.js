@@ -120,6 +120,7 @@ function init(h, w, data) {
 
                 radar.add(pv.Dot)
                     .event("click", function() {
+                        $('#tab-'+this.status()).tab('show');
                         self.location = "#tech" + this.techNumber();
                     })
                     .strokeStyle("#900")
@@ -129,6 +130,7 @@ function init(h, w, data) {
                     .shape(item.state == "new" ? "triangle" : "circle")
                     .size(100)
                     .title(item.name)
+                    .def("status", item.status)
                     .def("techNumber", item.num);
 
                 radar.add(pv.Label)
