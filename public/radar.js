@@ -120,7 +120,7 @@ function init(h, w, data) {
 
                 radar.add(pv.Dot)
                     .event("click", function() {
-                        $('#tab-'+this.status()).click();
+                        $('#tab-'+this.status()).tab('show');
                         self.location = "#tech" + this.techNumber();
                     })
                     .strokeStyle("#900")

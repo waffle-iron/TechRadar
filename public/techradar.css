@@ -102,7 +102,7 @@ circle:hover {
 
 .list-group-item:target{
     font-weight: bold;
-    background-color: #ffffe0;
+    background-color: #ecf3ff;
 }
 
 .list-group-item.active {
