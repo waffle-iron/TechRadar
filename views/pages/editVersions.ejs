@@ -16,6 +16,7 @@
 <body>
 
 <% include ../partials/menu.ejs %>
+<% include ../partials/technology-head.ejs %>
 
 <div class="container bs-docs-container">
     <div class="col-md-12">
@@ -120,7 +121,7 @@
                 }
             }
         });
-    });;
+    });
 
     $editBtn.click(function () {
         var data = {};
@@ -162,9 +163,6 @@
         });
     }
 
-</script>
-
-<script>
     // assign a technology id to the "Add a new version" modal/form
     $('#new-version-technology').val("<%= technology.id %>");
 
@@ -172,6 +170,11 @@
     $('#myModal').on('hidden.bs.modal', function () {
         $table.bootstrapTable('refresh');
     });
+
+    <% if (google_id!=undefined) { %>
+        ga('send', 'event', 'Technology', 'edit versions', '<%=technology.name%>');
+    <% } %>
+
 </script>
 
 </body>
