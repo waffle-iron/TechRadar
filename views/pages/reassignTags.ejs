@@ -17,6 +17,13 @@
 
 <% include ../partials/menu.ejs %>
 
+<div tabindex="-1" id="content" class="site-header">
+    <div class="container">
+        <h1><%= project.name %></h1>
+        <p>Reassign tags</p>
+    </div>
+</div>
+
 <div class="container bs-docs-container">
     <div class="col-md-12">
         <ol class="breadcrumb" style="margin-top: 10px;">
@@ -140,6 +147,9 @@
         }
     });
 
+    <% if (google_id!=undefined) { %>
+        ga('send', 'event', 'Project', 'reassign tags', '<%=project.name%>');
+    <% } %>
 </script>
 
 </body>

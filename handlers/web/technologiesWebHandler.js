@@ -66,7 +66,7 @@ TechnologiesWebHandler.getVersions = function (req, res) {
             res.render('pages/editVersions',
                 {
                     technology: value,
-                    user: req.user,
+                    user: req.user
                 });
         }
     });
