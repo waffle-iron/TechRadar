@@ -1,6 +1,7 @@
 var cache = require('../../dao/cache.js');
 var users = require('../../dao/users');
 var technology = require('../../dao/technology');
+var _ = require('underscore');
 
 var CategoriesWebHandler = function () {
 };
@@ -26,8 +27,22 @@ CategoriesWebHandler.technologiesForCategory = function (req, res) {
             return;
         }
 
+        var technologiesInGroups = _.chain(values).groupBy('status')
+            .map(function(technologies, key) {
+                return {
+                    status: key,
+                    technologies: technologies
+                }
+            }).value();
+
         var category = cache.getCategory(cname);
-        res.render('pages/categoryRadar', {category: category, technologies: values, user: req.user});
+
+        res.render('pages/categoryRadar', {
+            category: category,
+            technologies: values, // used by radar.js
+            technologiesInGroups: technologiesInGroups,
+            user: req.user
+        });
     });
 };
 

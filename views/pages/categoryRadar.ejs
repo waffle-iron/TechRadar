@@ -5,19 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
     <meta name="author" content="">
 
     <% include ../partials/head.ejs %>
 
     <script type="text/javascript" src="/lib/protovis-3.2/protovis-d3.2.js"></script>
     <script type="text/javascript" src="/radar.js" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8"></script>
-
+    <script>
+        var data =<%- JSON.stringify(technologies, null, 4) %>;
+    </script>
 </head>
-<script>
-    var data =<%- JSON.stringify(technologies, null, 4) %>;
-</script>
 
 <body onload="init(400,400,data);">
 
@@ -42,79 +39,13 @@
     <div class="row" style="padding-top: 20px;">
         <div class="row top-buffer">
             <div class="col-sm-6">
-
-                <%
-                if( technologies.length == 0) {
-                %>
-                <p>No technologies found</p>
-                <%
-                } else {
-                    var heading = "";
-                %>
-                <ul class="nav nav-pills" data-tabs="tabs">
-
-                    <%
-                    for (var i = 0, len = technologies.length; i < len; i++) {
-                        var technology = technologies[ i ];
-                    if( technology.status != heading) {
-                        heading = technology.status;
-                    %>
-                    <li class="<%- (i === 0 ) ? 'active' : '' %>">
-                        <a href="#<%= technology.status %>" data-toggle="tab"><%= technology.status %></a>
-                    </li>
-                    <%
-                    }
-                    }
-                    %>
-                </ul>
-
-                <div class="tab-content">
-                    <%
-                    var heading = "";
-                    var lastTechId = -1;
-                    var lastTechNum=-1;
-
-                    for (var i = 0, len = technologies.length; i < len; i++) {
-                        var technology = technologies[ i ];
-                    if( technology.status != heading) {
-                        heading = technology.status;
-
-                    if(i != 0) { %>
-                </div>
-                <% } %>
-                <div class="tab-pane <%- (i === 0 ) ? 'active' : '' %>" id="<%= heading %>">
-
-                    <% } %>
-
-                    <li class="list-group-item" id="tech<%= technology.num %>">
-                        <%
-                            var techNum;
-                            if(technology.id===lastTechId) {
-                                techNum = lastTechNum;
-                            } else {
-                                techNum = technology.num;
-                                lastTechNum = technology.num;
-                            }
-
-                            lastTechId=technology.id;
-                        %>
-                        <span class="badge"><%= techNum %></span>
-                        <%- link_to(technology.name, '/technology/' + technology.id) %>
-                    </li>
-
-                    <% }
-                    %>
-                </div>
+                <% include ../partials/radar-list.ejs %>
             </div>
-            <% } %>
-
-        </div>
-        <div class="col-sm-6">
-            <div id="radar"></div>
+            <div class="col-sm-6">
+                <div id="radar"></div>
+            </div>
         </div>
     </div>
-
-
 </div>
 
 <% include ../partials/footer.ejs %>
