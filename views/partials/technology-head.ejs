@@ -13,13 +13,13 @@
                             <td>-</td>
                             <td>
                                 <a class="banner-text-link"
-                                   href="/category/<%=encodeURI( technology.categoryname) .toLowerCase()%>/technologies"><%= technology.categoryname %>
+                                   href="/category/<%=encodeURI(technology.categoryname).toLowerCase()%>/technologies"><%= technology.categoryname %>
                                 </a>
                             </td>
                         </tr>
                          <tr>
                              <td>Website</td>
-                              <td>-</td>
+                             <td>-</td>
                              <td>
                                  <a class="banner-text-link" href="<%= (technology.website == null ? "#" : technology.website) %>" target="_blank">
                                      <%= (technology.website == null ? "" : technology.website) %>
@@ -31,12 +31,11 @@
                              <td>-</td>
                              <td>
                                  <a class="banner-text-link" href="<%= (technology.licencelink == null ? "#" : technology.licencelink) %>" target="_blank">
-                                     <%= (technology.licence == null ? (technology.licencelink ? "link" : "") : technology.licence) %>
+                                     <%= (technology.licence ? technology.licence : technology.licencelink) %>
                                  </a>
                              </td>
                          </tr>
-
-                         </table>
+                     </table>
                 </span>
             </div>
 
