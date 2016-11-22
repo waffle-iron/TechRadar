@@ -27,12 +27,14 @@ CategoriesWebHandler.technologiesForCategory = function (req, res) {
             return;
         }
 
+        // groups technologies by status into the following structure: 
+        // [{ status: key, technologies: [technologies where status==key]}]
         var technologiesInGroups = _.chain(values).groupBy('status')
             .map(function(technologies, key) {
                 return {
                     status: key,
                     technologies: technologies
-                }
+                };
             }).value();
 
         var category = cache.getCategory(cname);

@@ -16,9 +16,13 @@
         <% technologiesInGroups.forEach(function(techGroup, i){ %>
             <div class="tab-pane <%- (i === 0 ) ? 'active' : '' %>" id="<%= techGroup.status %>">
             <% techGroup.technologies.forEach(function(technology) { %>
-                <div class="list-group-item" id="tech<%= technology.num %>">
+                <div class="list-group-item tech-item tech-group-<%= technology.num %>" 
+                    id="tech-<%= technology.row_num || technology.num %>">
                     <span class="badge"><%= technology.num %></span>
                     <%- link_to(technology.name, '/technology/' + technology.id) %>
+                    <% if(technology.version) { %>
+                        <mark class="version-mark"><small><%= technology.version %></small></mark>
+                    <% } %>
                 </div>
             <% }); %>
             </div>

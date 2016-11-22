@@ -1,6 +1,7 @@
 var projects = require('../../dao/projects');
 var tags = require('../../dao/tag');
 var technology = require('../../dao/technology');
+var _ = require('underscore');
 
 var ProjectsWebHandler = function () {
 };
@@ -112,10 +113,22 @@ ProjectsWebHandler.showRadar = function (req, res) {
                 if (error) {
                     res.redirect('/error');
                 } else {
+
+                    // groups technologies by status into the following structure: 
+                    // [{ status: key, technologies: [technologies where status==key]}]
+                    var technologiesInGroups = _.chain(technologies).groupBy('status')
+                        .map(function(technologies, key) {
+                            return {
+                                status: key,
+                                technologies: technologies
+                            };
+                        }).value();
+                        
                     res.render('pages/projectRadar', {
                         user: req.user,
                         project: project,
-                        technologies: technologies
+                        technologies: technologies, // used by radar.js
+                        technologiesInGroups: technologiesInGroups
                     });
                 }
             });
