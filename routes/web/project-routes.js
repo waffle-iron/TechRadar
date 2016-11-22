@@ -34,11 +34,19 @@ ProjectRoutes.createRoutes = function (self) {
     self.app.get('/project/:projectId', security.isAuthenticated, handler.showRadar);
 
     /**
+     * Show project tags
+     */
+    self.app.get('/project/:projectId/tags', security.isAuthenticated, handler.reassignTags);
+
+    /**
      * List projects page
      */
     self.app.get('/projects', security.isAuthenticated, handler.list);
 
-
+    /**
+     * Edit all tags
+     */
+    self.app.get('/projects/tags/edit', security.isAuthenticated, handler.editTags);
 }
 
 

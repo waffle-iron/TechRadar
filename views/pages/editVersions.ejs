@@ -16,6 +16,7 @@
 <body>
 
 <% include ../partials/menu.ejs %>
+<% include ../partials/technology-head.ejs %>
 
 <div class="container bs-docs-container">
     <div class="col-md-12">
@@ -53,7 +54,10 @@
 <% include ../partials/software-versions-footer.ejs %>
 
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
+<script src="/stickyTablePageSize.js"></script>
 <script>
+    
+    
     $table = $('#results');
     $deleteBtn = $('#deleteBtn')
     $editBtn = $('#editBtn');
@@ -70,6 +74,7 @@
         showRefresh: true,
         showPaginationSwitch: true,
         pagination: true,
+        pageSize: page_size, // declared and set in stickyTablePageSize.js 
         columns: [{
             field:'state',
             checkbox:'true'
@@ -94,7 +99,7 @@
     });
 
     $deleteBtn.click( function() {
-        var r = confirm("Are you sure you want to delete the selected Categories");
+        var r = confirm("Are you sure you want to delete the selected versions? Deleted versions will disappear from all comments.");
         if (r == false) {
             return;
         }
@@ -116,7 +121,7 @@
                 }
             }
         });
-    });;
+    });
 
     $editBtn.click(function () {
         var data = {};
@@ -158,9 +163,6 @@
         });
     }
 
-</script>
-
-<script>
     // assign a technology id to the "Add a new version" modal/form
     $('#new-version-technology').val("<%= technology.id %>");
 
@@ -168,6 +170,11 @@
     $('#myModal').on('hidden.bs.modal', function () {
         $table.bootstrapTable('refresh');
     });
+
+    <% if (google_id!=undefined) { %>
+        ga('send', 'event', 'Technology', 'edit versions', '<%=technology.name%>');
+    <% } %>
+
 </script>
 
 </body>

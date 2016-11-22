@@ -1,5 +1,7 @@
 var projects = require('../../dao/projects');
+var tags = require('../../dao/tag');
 var technology = require('../../dao/technology');
+var _ = require('underscore');
 
 var ProjectsWebHandler = function () {
 };
@@ -8,9 +10,38 @@ ProjectsWebHandler.add = function (req, res) {
     res.render('pages/admin/addProject', {user: req.user});
 };
 
-ProjectsWebHandler.edit = function (req, res) {
+ProjectsWebHandler.reassignTags = function (req, res) {
     req.checkParams('projectId', 'Invalid project id').isInt();
 
+    var errors = req.validationErrors();
+    if (errors) {
+        res.redirect('/error');
+        return;
+    }
+
+    projects.findById(req.params.projectId, function (error, project) {
+        if (error) {
+            res.redirect('/error');
+            return;
+        }
+        tags.getAllWithOptionalProjectId(req.params.projectId, function (tags, tagsError) {
+            if (tagsError) {
+                res.redirect('/error');
+                return;
+            } else {
+                res.render('pages/reassignTags', {user: req.user, tags: tags, project: project});
+            }
+        });
+    });
+};
+
+ProjectsWebHandler.editTags = function (req, res) {
+    tags.getAll(function (tags) {
+        res.render('pages/editTags', {user: req.user, tags: tags});
+    });
+};
+
+ProjectsWebHandler.edit = function (req, res) {
     var errors = req.validationErrors();
     if (errors) {
         res.redirect('/error');
@@ -82,10 +113,22 @@ ProjectsWebHandler.showRadar = function (req, res) {
                 if (error) {
                     res.redirect('/error');
                 } else {
+
+                    // groups technologies by status into the following structure: 
+                    // [{ status: key, technologies: [technologies where status==key]}]
+                    var technologiesInGroups = _.chain(technologies).groupBy('status')
+                        .map(function(technologies, key) {
+                            return {
+                                status: key,
+                                technologies: technologies
+                            };
+                        }).value();
+                        
                     res.render('pages/projectRadar', {
                         user: req.user,
                         project: project,
-                        technologies: technologies
+                        technologies: technologies, // used by radar.js
+                        technologiesInGroups: technologiesInGroups
                     });
                 }
             });

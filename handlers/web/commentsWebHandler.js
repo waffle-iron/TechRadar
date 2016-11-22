@@ -21,6 +21,22 @@ CommentsWebHandler.add = function (req, res) {
     });
 };
 
+CommentsWebHandler.update = function (req, res) {
+    req.checkParams('commentId', 'Invalid comment id').isInt();
+
+    var errors = req.validationErrors();
+    if (errors) {
+        res.redirect('/error');
+        return;
+    }
+
+    comments.getById(req.params.commentId, function(comment) {
+        technology.getById(req.user.id, comment.technology, function (technology) {
+            res.render('pages/updateComment', {technology: technology, user: req.user, comment: comment});
+        });
+    });
+};
+
 CommentsWebHandler.commentsForTechnology = function (req, res) {
     req.checkParams('technologyId', 'Invalid technology id').isInt();
     req.checkParams('page', 'Invalid page number').isInt();

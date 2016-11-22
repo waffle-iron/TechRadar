@@ -11,10 +11,19 @@
             <div class="panel-body">
                 <header class="text-left">
                     <div class="comment-user"><i class="fa fa-user"></i> <%= comment.displayname %>
-                        <% if ( user.admin ) { %>
-                        <span onclick="javascript:TechRadar.deleteComment(<%= comment.id %>);"
-                              class="pull-right glyphicon glyphicon-trash selectable"></span>
-                        <% } %>
+
+                        <span class="pull-right">
+                            <% if ( user.username === comment.username || user.admin ) { %>
+                            <a class="btn btn-default" title="Edit" href="/comments/update/<%= comment.id %>"> 
+                                <span class="glyphicon glyphicon-edit selectable"></span>
+                            </a>
+                            <% } %>
+                            <% if ( user.admin ) { %>
+                            <button class="btn btn-default" title="Remove" onclick="javascript:TechRadar.deleteComment(<%= comment.id %>);"> 
+                                <span class="glyphicon glyphicon-trash selectable"></span>
+                            </button>
+                            <% } %>
+                        </span>
                     </div>
                     <time class="comment-date" datetime="16-12-2014 01:05"><i
                                 class="fa fa-clock-o"></i> <%= comment.date %>
@@ -35,6 +44,6 @@
 </article>
 <script>
     $(function() {
-        TechRadar.setAvatar("<%= comment.username %>", $(".avatar-<%= comment.username %>"));
+        TechRadar.setAvatar("<%= comment.username %>", $(".avatar-<%= comment.username.replace(/([:|\.@'"?#;])/g, "\\\\$1"); %>"));
     });
 </script>

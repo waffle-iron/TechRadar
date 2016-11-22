@@ -5,19 +5,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
     <meta name="author" content="">
 
     <% include ../partials/head.ejs %>
 
     <script type="text/javascript" src="/lib/protovis-3.2/protovis-d3.2.js"></script>
     <script type="text/javascript" src="/radar.js" charset="utf-8"></script>
-    <script type="text/javascript" charset="utf-8"></script>
-
+    <script>
+        var data =<%- JSON.stringify(technologies, null, 4) %>;
+    </script>
 </head>
-<script>
-    var data =<%- JSON.stringify(technologies, null, 4) %>;
-</script>
 
 <body onload="init(400,400,data);">
 
@@ -40,46 +37,15 @@
     </div>
 
     <div class="row" style="padding-top: 20px;">
-        <div class="col-sm-6">
-            <ul class="list-group">
-                <%
-                var heading = "";
-
-                if( technologies.length == 0) {
-                %>
-
-                <li class="list-group-item active">No technologies found</li>
-
-                <%
-                }
-
-                for (var i = 0, len = technologies.length; i < len; i++) {
-                    var technology = technologies[i];
-
-                if( technology.status != heading) {
-                    heading = technology.status;
-                %>
-                <li class="list-group-item active"><%= heading %></li>
-
-                <% } %>
-
-                <li class="list-group-item" id="tech<%=technology.num%>">
-                    <span class="badge"><%= technology.num %></span>
-                    <a href="/technology/<%= technology.id %>"><%= technology.name %></a>
-                </li>
-
-                <% } %>
-
-            </ul>
-
-
-        </div>
-        <div class="col-sm-6">
-            <div id="radar"></div>
+        <div class="row top-buffer">
+            <div class="col-sm-6">
+                <% include ../partials/radar-list.ejs %>
+            </div>
+            <div class="col-sm-6">
+                <div id="radar"></div>
+            </div>
         </div>
     </div>
-
-
 </div>
 
 <% include ../partials/footer.ejs %>

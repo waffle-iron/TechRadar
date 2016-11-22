@@ -91,9 +91,18 @@ button.btn-primary:hover {
     color: white;
 }
 
+circle:hover {
+    fill: #F00;
+}
+
 .list-group, .list-group-item {
     color: #6f5499;
     text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.tech-item.highlighted{
+    font-weight: bold;
+    background-color: #ecf3ff;
 }
 
 .list-group-item.active {

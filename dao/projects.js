@@ -5,11 +5,23 @@ var Projects = function () {
 };
 
 /**
- * Get all the projects
+ * Get all the projects with their tags
  * @param done function to call with the results
  */
 Projects.getAll = function (done) {
-    dbhelper.getAllFromTable("PROJECTS", done);
+    var sql = `SELECT p.*, string_agg(t.name, ', ') AS tags FROM projects AS p
+        LEFT OUTER JOIN tag_project_link tpl ON tpl.projectid=p.id
+        LEFT OUTER JOIN tags t ON tpl.tagid=t.id
+        GROUP BY p.id`;
+
+    dbhelper.query(sql, null,
+        function (results) {
+            done(results);
+        },
+        function (error) {
+            console.log(error);
+            return done(error, null);
+        });
 }
 
 /**
