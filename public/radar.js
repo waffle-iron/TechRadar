@@ -121,7 +121,9 @@ function init(h, w, data) {
                 radar.add(pv.Dot)
                     .event("click", function() {
                         $('#tab-'+this.status()).tab('show');
-                        self.location = "#tech" + this.techNumber();
+                        self.location = "#tech-" + (this.rowNumber() || this.techGroupNumber());
+                        $('.tech-item').removeClass('highlighted');
+                        $('.tech-group-' + this.techGroupNumber()).addClass('highlighted');
                     })
                     .strokeStyle("#900")
                     .fillStyle("#900")
@@ -131,7 +133,9 @@ function init(h, w, data) {
                     .size(100)
                     .title(item.name)
                     .def("status", item.status)
-                    .def("techNumber", item.num);
+                    .def("rowNumber", item.row_num) // unique
+                    // techGroupNumber number is the same for technologies with the same ID
+                    .def("techGroupNumber", item.num); 
 
                 radar.add(pv.Label)
                     .left(point[0])
