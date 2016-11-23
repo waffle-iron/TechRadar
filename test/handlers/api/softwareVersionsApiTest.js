@@ -13,11 +13,16 @@ describe("Software versions api handler", function() {
         req = res = {};
         res.end = sinon.spy();
         res.writeHead = sinon.spy();
+        apiUtilsSpy = sinon.stub(apiutils, 'handleResultSet');
+    });
+
+    afterEach(function() {
+        apiutils.handleResultSet.restore();
     });
 
     describe("getAllVersionsForTechnology", function() {
         var getAllForTechnologySpy,
-            testData = { technology: '1' };
+            testData = { technology: '187658' };
 
         beforeEach(function() {
             req.params = {
@@ -26,12 +31,10 @@ describe("Software versions api handler", function() {
             getAllForTechnologySpy = sinon.stub(versionsDao, 'getAllForTechnology', function (technology, cb) {
                 cb(testData.technology);
             });
-            sinon.stub(apiutils, 'handleResultSet');
         });
 
         afterEach(function() {
             versionsDao.getAllForTechnology.restore();
-            apiutils.handleResultSet.restore();
         });
 
         it("should call softwareVersions dao with proper data", function() {
@@ -40,11 +43,19 @@ describe("Software versions api handler", function() {
             sinon.assert.calledOnce(versionsDao.getAllForTechnology);
             expect(getAllForTechnologySpy.getCalls()[0].args[0]).that.is.a('string').to.equal(req.params.technology);
         });
+
+        it("should generate a response based on dao results", function() {
+            apiVersions.getAllVersionsForTechnology(req, res);
+
+            sinon.assert.calledOnce(res.end);
+            sinon.assert.calledOnce(res.writeHead);
+            expect(res.end.getCalls()[0].args[0]).that.is.a('string').to.equal(JSON.stringify(testData.technology));
+        });
     });
 
     describe("addVersion", function() {
         var addVersionSpy,
-            testData = { technology: '1', name: '4.0.0-alpha' };
+            testData = { technology: '1765758', name: '4.0.0-alpha' };
 
         beforeEach(function() {
             req.body = {
@@ -54,12 +65,10 @@ describe("Software versions api handler", function() {
             addVersionSpy = sinon.stub(versionsDao, 'add', function (technology, name, cb) {
                 cb(testData.technology, testData.name);
             });
-            sinon.stub(apiutils, 'handleResultSet');
         });
 
         afterEach(function() {
             versionsDao.add.restore();
-            apiutils.handleResultSet.restore();
         });
 
         it("should call softwareVersions dao with proper data", function() {
@@ -69,11 +78,18 @@ describe("Software versions api handler", function() {
             expect(addVersionSpy.getCalls()[0].args[0]).that.is.a('string').to.equal(req.body.technology);
             expect(addVersionSpy.getCalls()[0].args[1]).that.is.a('string').to.equal(req.body.name);
         });
+        
+        it("should generate a response based on dao results", function() {
+            apiVersions.addVersion(req, res);
+
+            sinon.assert.calledOnce(apiutils.handleResultSet);
+            expect(apiUtilsSpy.getCalls()[0].args[1]).to.equal(testData.technology);
+        });
     });
 
     describe("updateVersion", function() {
         var updateVersionSpy,
-            testData = { version: '1', name: '4.0.0-alpha' };
+            testData = { version: '76571', name: '4.0.0-alpha' };
 
         beforeEach(function() {
             req.body = {
@@ -85,7 +101,6 @@ describe("Software versions api handler", function() {
             updateVersionSpy = sinon.stub(versionsDao, 'update', function (version, name, cb) {
                 cb(testData.version, testData.name);
             });
-            sinon.stub(apiutils, 'handleResultSet');
             var methods = { 
                 isInt: sinon.stub(),
                 notEmpty: sinon.stub() 
@@ -95,7 +110,6 @@ describe("Software versions api handler", function() {
 
         afterEach(function() {
             versionsDao.update.restore();
-            apiutils.handleResultSet.restore();
         });
 
         it("should call softwareVersions dao with proper data", function() {
@@ -115,6 +129,13 @@ describe("Software versions api handler", function() {
 
             req.validationErrors.restore();
         });
+
+        it("should generate a response based on dao results", function() {
+            apiVersions.updateVersion(req, res);
+
+            sinon.assert.calledOnce(apiutils.handleResultSet);
+            expect(apiUtilsSpy.getCalls()[0].args[1]).to.equal(testData.version);
+        });
     });
 
     describe("deleteVersions", function() {
@@ -128,12 +149,10 @@ describe("Software versions api handler", function() {
             deleteVersionsSpy = sinon.stub(versionsDao, 'delete', function (versions, cb) {
                 cb(testData.versions);
             });
-            sinon.stub(apiutils, 'handleResultSet');
         });
 
         afterEach(function() {
             versionsDao.delete.restore();
-            apiutils.handleResultSet.restore();
         });
 
         it("should call softwareVersions dao with proper data", function() {
@@ -141,6 +160,13 @@ describe("Software versions api handler", function() {
 
             sinon.assert.calledOnce(versionsDao.delete);
             expect(deleteVersionsSpy.getCalls()[0].args[0]).that.is.an('array').to.equal(testData.versions);
+        });
+
+        it("should generate a response based on dao results", function() {
+            apiVersions.deleteVersions(req, res);
+
+            sinon.assert.calledOnce(apiutils.handleResultSet);
+            expect(apiUtilsSpy.getCalls()[0].args[1]).to.equal(testData.versions);
         });
     });
 });
