@@ -20,8 +20,13 @@
                     id="tech-<%= technology.row_num || technology.num %>">
                     <span class="badge"><%= technology.num %></span>
                     <%- link_to(technology.name, '/technology/' + technology.id) %>
+
                     <% if(technology.version) { %>
                         <mark class="version-mark"><small><%= technology.version %></small></mark>
+                    <% } %>
+
+                    <% if(technology.id) { %>
+                        <% include ../partials/software-versions.ejs %>
                     <% } %>
                 </div>
             <% }); %>

@@ -282,3 +282,7 @@ form[role=login] .warning {
     border-radius: 0;
     color:#fff;
 }
+
+div.version-dropdown {
+    display: inline;
+}
