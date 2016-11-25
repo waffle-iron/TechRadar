@@ -42,8 +42,12 @@
                 <div class="form-inline" role="form">
                     <a href="#" onclick="$('#addTagModal').modal('show');" class="btn btn-info">
                         <i class="glyphicon glyphicon-plus"></i>
-                        Create
+                        Add
                     </a>
+                    <button id="editBtn" class="btn btn-info" disabled="">
+                        <i class="glyphicon glyphicon-edit"></i>
+                        Edit
+                    </button>
                     <button id="deleteBtn" class="btn btn-danger" disabled="">
                         <i class="glyphicon glyphicon-remove"></i>
                         Delete
@@ -114,6 +118,7 @@
 <script>
     $table = $('#results');
     $deleteBtn = $('#deleteBtn');
+    $editBtn = $('#editBtn');
 
     $table.bootstrapTable({
         method: 'get',
@@ -144,35 +149,12 @@
             field: 'name',
             title: 'Name',
             sortable: true
-        }, {
-            field: 'edit',
-            title: 'Edit',
-            formatter: editColumnFormatter
         }]
-    });
-
-    function editColumnFormatter(value, row, index) {
-        return `<button class="btn btn-info edit-tag-btn" 
-                data-tag-name="` + row.name + `"
-                data-tagid="` + row.id + `"> 
-                    <i class="glyphicon glyphicon-edit"></i>
-                    Edit
-                </button>`;
-    }
-
-    // Fires after the table body is rendered and available in the DOM
-    $table.on('post-body.bs.table', function () {
-        $(".edit-tag-btn").click(function() {
-            var tagId = $(this).attr('data-tagid');
-            var tagName = $(this).attr('data-tag-name');
-            $('#editTagModal').modal('show');
-            $('input#edit-tag-name').val(tagName);
-            $('input#edit-tagid').val(tagId);
-        });
     });
 
     $table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table pre-body.bs.table', function () {
         $deleteBtn.prop('disabled', !$table.bootstrapTable('getSelections').length);
+        $editBtn.prop('disabled', $table.bootstrapTable('getSelections').length != 1);
     });
 
     $deleteBtn.click( function() {
@@ -198,7 +180,15 @@
                 }
             }
         });
-    });;
+    });
+
+    $editBtn.click(function () {
+        var tagId = getIdSelections()[0];
+        var tagName = getNameSelections()[0];
+        $('#editTagModal').modal('show');
+        $('input#edit-tag-name').val(tagName);
+        $('input#edit-tagid').val(tagId);
+    });
 
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
