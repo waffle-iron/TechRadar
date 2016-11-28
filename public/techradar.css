@@ -66,6 +66,13 @@ a {
     color: #fff;
 }
 
+.banner-text-link {
+    max-width: 250px;
+    display: block;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}
+
 .banner-text-link:hover {
     color: #cdbfe3;
     text-decoration: none;
