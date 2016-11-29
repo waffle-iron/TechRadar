@@ -157,4 +157,18 @@ ProjectsWebHandler.list = function (req, res) {
 
 };
 
+ProjectsWebHandler.listForTag = function (req, res) {
+
+    var tagId = req.params.tagId;
+
+    tags.getById(tagId, function(tag, error) {
+        if(error) {
+            res.redirect('/error');
+        } else {
+            res.render('pages/searchProjectsByTag', {user: req.user, tag: tag});
+        }
+    });
+
+};
+
 module.exports = ProjectsWebHandler;

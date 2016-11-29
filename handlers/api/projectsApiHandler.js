@@ -18,6 +18,14 @@ ProjectsApiHandler.getProjects = function (req, res) {
     });
 };
 
+ProjectsApiHandler.getProjectsForTag = function (req, res) {
+    var tagId = sanitizer(req.params.tagId);
+
+    projects.getAllForTag(tagId, function (result, error) {
+        apiutils.handleResultSet(res, result, error);
+    });
+};
+
 
 ProjectsApiHandler.addProject = function (req, res) {
 

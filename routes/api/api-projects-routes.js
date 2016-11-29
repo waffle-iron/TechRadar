@@ -20,6 +20,11 @@ ApiProjectRoutes.createRoutes = function (self) {
     self.app.get('/api/projects', security.isAuthenticated, handler.getProjects );
 
     /**
+     * Get all projects for tag
+     */
+    self.app.get('/api/projects/tag/:tagId', security.isAuthenticated, handler.getProjectsForTag );
+
+    /**
      * Add a new project
      */
     self.app.post('/api/project', security.canEdit, jsonParser, handler.addProject );
