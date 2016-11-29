@@ -104,9 +104,16 @@
         }, {
             field: 'name',
             title: 'Name',
+            formatter: tagNameFormatter,
             sortable: true
         }],
     });;
+
+    function tagNameFormatter(value, row, index) {
+        return [
+            '<a href="/projects/tag/' + row['id'] + '">' + value + '</a>'
+        ];
+    }
 
     function getTagIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
