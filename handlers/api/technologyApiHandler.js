@@ -185,16 +185,17 @@ TechnologyApiHandler.updateStatus = function (req, res) {
 
     technology.updateStatus(tech, status, reason, req.user.id, function (result, error) {
         apiutils.handleResultSet(res, result, error);
-    })
+    });
 };
 
 TechnologyApiHandler.addProject = function (req, res) {
     var projectId = sanitizer(req.body.project);
     var technologyId = sanitizer(req.params.technology);
+    var versionId = sanitizer(req.body.version);
 
-    technology.addProject(technologyId, projectId, function (result, error) {
+    technology.addProject(technologyId, projectId, versionId, function (result, error) {
         apiutils.handleResultSet(res, result, error);
-    })
+    });
 };
 
 TechnologyApiHandler.getUsersCountInLastDays = function (req, res) {

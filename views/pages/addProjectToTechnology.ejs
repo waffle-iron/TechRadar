@@ -47,6 +47,9 @@ getBreadcrumb = function() {
                                 <% }); %>
                             </select>
                         </fieldset>
+                        <div id="versions" class="form-group">
+                            <% include ../partials/software-versions.ejs %>
+                        </div>
                         <button type="submit" id="projectAddBtn" class="btn btn-default">Add</button>
                     </form>
                 </div>
@@ -72,6 +75,7 @@ getBreadcrumb = function() {
 </div>
 
 <% include ../partials/footer.ejs %>
+<% include ../partials/software-versions-footer.ejs %>
 
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="/stickyTablePageSize.js"></script>
@@ -149,7 +153,12 @@ getBreadcrumb = function() {
     var addProject = function () {
         $(":submit").attr("disabled", true);
 
-        var data = {project: $('#newProject').val(), technology:<%= technology.id %>};
+        var data = {
+            project: $('#newProject').val(), 
+            technology:<%= technology.id %>,
+            version: $('#versions select.version-dropdown').val()
+        };
+
         $.post('/api/technology/<%= technology.id %>/project', data, function (result) {
             if(result.success) {
                 location.href = "/technology/<%=technology.id%>/projects";

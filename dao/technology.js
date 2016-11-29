@@ -285,9 +285,17 @@ Technology.search = function (value, done) {
  * @param projectId Project ID
  * @param callback Function to call when the update is finished
  */
-Technology.addProject = function (technologyId, projectId, done) {
-    var sql = "INSERT INTO technology_project_link (technologyid, projectid) VALUES ($1, $2)";
+Technology.addProject = function (technologyId, projectId, versionId, done) {
+    var optionalVersionPlaceholder = ", null";
     var params = [technologyId, projectId];
+
+    if(versionId) {
+        params.push(versionId);
+        optionalVersionPlaceholder = ", $3";
+    }
+
+    var sql = "INSERT INTO technology_project_link (technologyid, projectid, software_version_id)" + 
+        " VALUES ($1, $2 " + optionalVersionPlaceholder + ")";
 
     dbhelper.insert(sql, params,
         function (result) {
@@ -298,7 +306,6 @@ Technology.addProject = function (technologyId, projectId, done) {
             done(null, error);
         });
 };
-
 
 /**
  * Remove projects from a technology

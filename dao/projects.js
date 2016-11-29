@@ -206,7 +206,7 @@ Projects.update = function (id, name, description, done) {
  * @param done function to call with the results
  */
 Projects.getAllForTechnology = function (technologyId, done) {
-    var sql = "SELECT p.* from projects p" +
+    var sql = "SELECT DISTINCT p.* from projects p" +
         " INNER JOIN technology_project_link tpl on p.id = tpl.projectid" +
         " where tpl.technologyid = $1" +
         " ORDER BY p.name ASC";
