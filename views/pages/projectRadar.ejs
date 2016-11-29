@@ -68,7 +68,7 @@
                     <a href="/project/<%= project.id %>/tags">Tags:</a>
                 </span>
                 <% tags.forEach(function(tag) { %>
-                    <a href="/projects?tagName=<%= tag.name %>">
+                    <a href="/projects/tag/<%= tag.id %>">
                         <span class="tag label label-info">
                             <%= tag.name %>
                         </span>
