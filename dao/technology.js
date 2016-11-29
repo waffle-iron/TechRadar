@@ -283,7 +283,8 @@ Technology.search = function (value, done) {
  *
  * @param technologyId Technology ID
  * @param projectId Project ID
- * @param callback Function to call when the update is finished
+ * @param [versionId] Software version ID to associate with the technology
+ * @param done Function to call when the addition is finished
  */
 Technology.addProject = function (technologyId, projectId, versionId, done) {
     var optionalVersionPlaceholder = ", null";
@@ -312,7 +313,7 @@ Technology.addProject = function (technologyId, projectId, versionId, done) {
  *
  * @param technologyId Technology ID
  * @param projectIds Project IDs
- * @param callback Function to call when the deletion is finished
+ * @param done Function to call when the deletion is finished
  */
 Technology.removeProjects = function (technologyId, projectIds, done) {
     var idPlaceholders = [];
