@@ -9,7 +9,8 @@ var Projects = function () {
  * @param done function to call with the results
  */
 Projects.getAll = function (done) {
-    var sql = `SELECT p.*, string_agg(t.name, ', ') AS tags FROM projects AS p
+    var sql = `SELECT p.*, string_agg(t.id::character varying, ', ') AS tags 
+        FROM projects AS p
         LEFT OUTER JOIN tag_project_link tpl ON tpl.projectid=p.id
         LEFT OUTER JOIN tags t ON tpl.tagid=t.id
         GROUP BY p.id`;
@@ -234,7 +235,7 @@ Projects.getAllForTag = function (tagId, done) {
             INNER JOIN tag_project_link tpl  
             ON tpl.tagid=$1 AND tpl.projectid=p.id	
         )
-        SELECT pct.*, string_agg(t.name, ', ') AS tags 
+        SELECT pct.*, string_agg(t.id::character varying, ', ') AS tags 
         FROM projects_containing_tag AS pct
         INNER JOIN tag_project_link tpl ON tpl.projectid=pct.id
         INNER JOIN tags t ON tpl.tagid=t.id

@@ -64,60 +64,78 @@
             <table id="results"></table>
         </div>
     </div>
-
-
 </div>
 
 <% include ../partials/footer.ejs %>
 
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="/stickyTablePageSize.js"></script>
-<script>
+<script src="/tags.js"></script>
 
-    
+<script>
+$(function () { // when the DOM is ready
     $table = $('#results');
 
-    $table.bootstrapTable({
-        method: 'get',
-        url: '/api/projects',
-        cache: false,
-        striped: true,
-        escape: true,
-        idField: 'id',
-        search: true,
-        sortName: 'name',
-        showColumns: true,
-        showExport: true,
-        showRefresh: true,
-        searchOnEnterKey: true,
-        showPaginationSwitch: true,
-        pagination: true,
-        pageSize: page_size, // declared and set in stickyTablePageSize.js 
-        columns: [
-        <% if(user.admin) { %>
+    TechRadar.getAllTags(function(allTags, error) {
+        $table.bootstrapTable({
+            method: 'get',
+            url: '/api/projects',
+            cache: false,
+            striped: true,
+            escape: true,
+            idField: 'id',
+            search: true,
+            sortName: 'name',
+            showColumns: true,
+            showExport: true,
+            showRefresh: true,
+            searchOnEnterKey: true,
+            showPaginationSwitch: true,
+            pagination: true,
+            pageSize: page_size, // declared and set in stickyTablePageSize.js 
+            columns: [
+            <% if(user.admin) { %>
+                {
+                    field: 'state',
+                    checkbox: 'true'
+                }, 
+            <% } %>
             {
-                field: 'state',
-                checkbox: 'true'
-            }, 
-        <% } %>
-        {
-            field: 'id',
-            title: 'ID',
-            visible: false
-        }, {
-            field: 'name',
-            title: 'Name',
-            sortable: true,
-            formatter: operateFormatter
-        }, {
-            field: 'description',
-            title: 'Description',
-            sortable: false
-        }, {
-            field: 'tags',
-            title: 'Tags',
-            sortable: true
-        }]
+                field: 'id',
+                title: 'ID',
+                visible: false
+            }, {
+                field: 'name',
+                title: 'Name',
+                sortable: true,
+                formatter: operateFormatter
+            }, {
+                field: 'description',
+                title: 'Description',
+                sortable: false
+            }, {
+                title: 'Tags',
+                formatter: tagsFormatter
+            }]
+        });
+        
+        function tagsFormatter(value, row, index) {
+            tagsAsHtml = '';
+            var tagIdsString = row.tags;
+
+            if(tagIdsString) {
+                tagIds = tagIdsString.split(','); // array of tag IDs
+
+                tagIds.map(function(tagId) { 
+                    var tag = allTags.find(function(element){
+                        return element.id == tagId;
+                    });
+                    tagsAsHtml += TechRadar.convertTagToHtml(tag);
+                });
+            }
+
+            return tagsAsHtml;
+        }
     });
 
     <% if (user.admin) { %>
@@ -178,7 +196,7 @@
             '<a href="/project/' + row['id'] + '">' + value + '</a>'
         ].join('');
     }
-
+});
 </script>
 
 </body>

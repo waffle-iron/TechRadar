@@ -128,6 +128,27 @@ Tag.getAll = function (done) {
 };
 
 /**
+ * Get all tags for a project
+ * @param {Number} projectId ID of the project
+ * @param done Function to call with the results
+ */
+Tag.getAllForProject = function (projectId, done) {
+    var sql = `SELECT * FROM tag_project_link tpl
+        INNER JOIN tags t ON t.id=tpl.tagid 
+        WHERE projectid=$1
+    ;`;
+
+    dbhelper.query(sql, [projectId],
+        function (results) {
+            done(results);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+    });
+};
+ 
+/**
  * Get tag by its ID
  * @param {Number} tagId ID of the tag
  * @param done Function to call with the results
