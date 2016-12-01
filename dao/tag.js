@@ -147,6 +147,27 @@ Tag.getAllForProject = function (projectId, done) {
             done(null, error);
     });
 };
+<<<<<<< HEAD
+=======
+ 
+/**
+ * Get tag by its ID
+ * @param {Number} tagId ID of the tag
+ * @param done Function to call with the results
+ */
+Tag.getById = function (tagId, done) {
+    var sql = `SELECT * FROM tags WHERE id=$1;`;
+
+    dbhelper.query(sql, [tagId],
+        function (results) {
+            done(results[0]);
+        },
+        function (error) {
+            console.error(error);
+            done(null, error);
+    });
+};
+>>>>>>> master
 
 /**
  * Get all tags and indicate which tags belong to the project

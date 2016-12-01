@@ -89,6 +89,39 @@ describe("Tags api handler", function() {
         });
     });
 
+    describe("getForProject", function() {
+        var getForProjectSpy;
+        var req = {params: {projectId: '52345532'}};
+        var res = {};
+        
+        beforeEach(function() {
+            getForProjectSpy = sinon.stub(tagsDao, 'getAllForProject', function(projectId, done) {
+                done(testData, testError);
+            });
+        });
+
+        afterEach(function() {
+            tagsDao.getAllForProject.restore();
+        });
+
+        it("should call getForProject() from tags DAO", function() {
+            apiTags.getForProject(req, res);
+            sinon.assert.calledOnce(tagsDao.getAllForProject);
+        });
+
+        it("should pass the results to the API handler", function() {
+            apiTags.getForProject(req, res);
+
+            expect(apiUtilsSpy.getCalls()[0].args[1]).to.equal(testData);
+        });
+
+        it("should pass the errors to the API handler", function() {
+            apiTags.getForProject(req, res);
+
+            expect(apiUtilsSpy.getCalls()[0].args[2]).to.equal(testError);
+        });
+    });
+
     describe("addTag", function() {
         var addSpy;
         var req = {body: {name: 'Tag name'}};

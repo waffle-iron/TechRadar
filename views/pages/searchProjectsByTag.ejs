@@ -22,7 +22,7 @@
     <div class="container">
         <row>
             <div class="col-md-12">
-                <h1>Project Search</h1>
+                <h1>Project Search For Tag: <%= tag.name %></h1>
             </div>
         </row>
 
@@ -33,7 +33,8 @@
     <div class="col-md-12">
         <ol class="breadcrumb" style="margin-top: 10px;">
             <li><a href="/">Home</a></li>
-            <li class="active">Project search</li>
+            <li><a href="/projects">Project search</a></li>
+            <li class="active">Tag: <%= tag.name %></li>
         </ol>
     </div>
 
@@ -71,7 +72,6 @@
 <script src="/lib/bootstrap-table/bootstrap-table.min.js"></script>
 <script src="/stickyTablePageSize.js"></script>
 <script src="/tags.js"></script>
-
 <script>
 $(function () { // when the DOM is ready
     $table = $('#results');
@@ -79,7 +79,7 @@ $(function () { // when the DOM is ready
     TechRadar.getAllTags(function(allTags, error) {
         $table.bootstrapTable({
             method: 'get',
-            url: '/api/projects',
+            url: '/api/projects/tag/<%= tag.id %>',
             cache: false,
             striped: true,
             escape: true,
@@ -93,6 +93,10 @@ $(function () { // when the DOM is ready
             showPaginationSwitch: true,
             pagination: true,
             pageSize: page_size, // declared and set in stickyTablePageSize.js 
+            // reach the columns nested in the response data
+            responseHandler: function(res) {
+                return res.result; 
+            },
             columns: [
             <% if(user.admin) { %>
                 {
@@ -115,9 +119,10 @@ $(function () { // when the DOM is ready
                 sortable: false
             }, {
                 title: 'Tags',
-                formatter: TechRadar.getTagsFormatter(allTags)
+                formatter: TechRadar.getTagsFormatter(allTags),
+                sortable: true
             }]
-        });
+        }); 
     });
 
     <% if (user.admin) { %>

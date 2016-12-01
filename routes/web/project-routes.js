@@ -44,6 +44,11 @@ ProjectRoutes.createRoutes = function (self) {
     self.app.get('/projects', security.isAuthenticated, handler.list);
 
     /**
+     * List projects page for a tag
+     */
+    self.app.get('/projects/tag/:tagId', security.isAuthenticated, handler.listForTag);
+
+    /**
      * Edit all tags
      */
     self.app.get('/projects/tags/edit', security.isAuthenticated, handler.editTags);
