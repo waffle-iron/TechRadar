@@ -147,9 +147,7 @@ Tag.getAllForProject = function (projectId, done) {
             done(null, error);
     });
 };
-<<<<<<< HEAD
-=======
- 
+
 /**
  * Get tag by its ID
  * @param {Number} tagId ID of the tag
@@ -167,7 +165,6 @@ Tag.getById = function (tagId, done) {
             done(null, error);
     });
 };
->>>>>>> master
 
 /**
  * Get all tags and indicate which tags belong to the project
