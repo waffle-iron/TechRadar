@@ -22,12 +22,7 @@ TechnologyApiHandler.addVote = function (req, res) {
     var statusValue = status.id;
 
     votes.add(tech, statusValue, userId, function (result, error) {
-        res.writeHead(200, {"Content-Type": "application/json"});
-        if (error != null) {
-            res.end(JSON.stringify({success: false, error: error}));
-        } else {
-            res.end(JSON.stringify({success: true, vote: result}));
-        }
+        apiutils.handleResultWithFlash(req, res, result, error);
     });
 };
 
@@ -37,12 +32,7 @@ TechnologyApiHandler.addUsedThisTechnologyVote = function (req, res) {
     var userId = sanitizer(req.user.id);
 
     usedThisVotes.add(tech, daysAgo, userId, function (result, error) {
-        res.writeHead(200, {"Content-Type": "application/json"});
-        if (error != null) {
-            res.end(JSON.stringify({success: false, error: error}));
-        } else {
-            res.end(JSON.stringify({success: true, vote: result}));
-        }
+        apiutils.handleResultWithFlash(req, res, result, error);
     });
 };
 

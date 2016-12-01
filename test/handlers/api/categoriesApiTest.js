@@ -14,6 +14,7 @@ describe("Categories api handler", function() {
 
     beforeEach(function() {
         req = res = {};
+        req.flash = sinon.spy();
         res.end = sinon.spy();
         res.writeHead = sinon.spy();
     });
@@ -59,7 +60,7 @@ describe("Categories api handler", function() {
             addCategorySpy = sinon.stub(category, 'add', function(name, description, cb) {
                 cb(testData);
             });
-            apiUtilsSpy = sinon.stub(apiutils, 'handleResultSet', function(res, result, error) {
+            apiUtilsSpy = sinon.stub(apiutils, 'handleResultWithFlash', function(req, res, result, error) {
             });
             cacheSpy = sinon.stub(cache, 'refresh', function(app) {
             });
@@ -68,7 +69,7 @@ describe("Categories api handler", function() {
 
         afterEach(function() {
             category.add.restore();
-            apiutils.handleResultSet.restore();
+            apiutils.handleResultWithFlash.restore();
             cache.refresh.restore();
         });
 
@@ -83,8 +84,8 @@ describe("Categories api handler", function() {
         it("should generate response based on dao results", function() {
             apiCategories.addCategory(app)(req, res);
 
-            sinon.assert.calledOnce(apiutils.handleResultSet);
-            expect(apiUtilsSpy.getCalls()[0].args[1]).that.is.a('boolean').to.equal(testData);
+            sinon.assert.calledOnce(apiutils.handleResultWithFlash);
+            expect(apiUtilsSpy.getCalls()[0].args[2]).that.is.a('boolean').to.equal(testData);
         });
 
         it("should refresh cache on success", function() {
@@ -114,7 +115,7 @@ describe("Categories api handler", function() {
             deleteCategorySpy = sinon.stub(category, 'delete', function(data, cb) {
                 cb(testData);
             });
-            apiUtilsSpy = sinon.stub(apiutils, 'handleResultSet', function(res, result, error) {
+            apiUtilsSpy = sinon.stub(apiutils, 'handleResultWithFlash', function(res, result, error) {
             });
             cacheSpy = sinon.stub(cache, 'refresh', function(app) {
             });
@@ -123,7 +124,7 @@ describe("Categories api handler", function() {
 
         afterEach(function() {
             category.delete.restore();
-            apiutils.handleResultSet.restore();
+            apiutils.handleResultWithFlash.restore();
             cache.refresh.restore();
         });
 
@@ -137,8 +138,8 @@ describe("Categories api handler", function() {
         it("should generate response based on dao results", function() {
             apiCategories.deleteCategories(app)(req, res);
 
-            sinon.assert.calledOnce(apiutils.handleResultSet);
-            expect(apiUtilsSpy.getCalls()[0].args[1]).that.is.a('boolean').to.equal(testData);
+            sinon.assert.calledOnce(apiutils.handleResultWithFlash);
+            expect(apiUtilsSpy.getCalls()[0].args[2]).that.is.a('boolean').to.equal(testData);
         });
 
         it("should refresh cache on success", function() {

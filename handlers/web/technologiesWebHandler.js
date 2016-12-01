@@ -95,7 +95,8 @@ TechnologiesWebHandler.getTechnology = function (req, res) {
                     technology: value,
                     user: req.user,
                     statuses: statuses,
-                    usedThisOptions: usedThisOptions
+                    usedThisOptions: usedThisOptions,
+                    messages: req.flash()
                 });
         }
     });

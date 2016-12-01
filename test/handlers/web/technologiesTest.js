@@ -16,7 +16,8 @@ describe("Technologies web handler", function() {
         res.redirect = sinon.spy();
         req = {
             user: { id: 111 },
-            params: { id: 222 }
+            params: { id: 222 },
+            flash: sinon.spy()
         };
         req.checkParams = function () {}; // this method normally comes from express middleware
         req.validationErrors = function () {}; // this method normally comes from express middleware
