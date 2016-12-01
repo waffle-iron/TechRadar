@@ -26,7 +26,6 @@ ProjectsApiHandler.getProjectsForTag = function (req, res) {
     });
 };
 
-
 ProjectsApiHandler.addProject = function (req, res) {
 
     var projectName = sanitizer(req.body.projectname);

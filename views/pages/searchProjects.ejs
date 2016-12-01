@@ -115,27 +115,9 @@ $(function () { // when the DOM is ready
                 sortable: false
             }, {
                 title: 'Tags',
-                formatter: tagsFormatter
+                formatter: TechRadar.getTagsFormatter(allTags)
             }]
         });
-        
-        function tagsFormatter(value, row, index) {
-            tagsAsHtml = '';
-            var tagIdsString = row.tags;
-
-            if(tagIdsString) {
-                tagIds = tagIdsString.split(','); // array of tag IDs
-
-                tagIds.map(function(tagId) { 
-                    var tag = allTags.find(function(element){
-                        return element.id == tagId;
-                    });
-                    tagsAsHtml += TechRadar.convertTagToHtml(tag);
-                });
-            }
-
-            return tagsAsHtml;
-        }
     });
 
     <% if (user.admin) { %>
@@ -186,10 +168,9 @@ $(function () { // when the DOM is ready
 
     function getIdSelections() {
         return $.map($table.bootstrapTable('getSelections'), function (row) {
-            return row.id
+            return row.id;
         });
     }
-
 
     function operateFormatter(value, row, index) {
         return [

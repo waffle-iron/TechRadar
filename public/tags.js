@@ -18,7 +18,7 @@ $(function() {
                 }
             }
         });
-    }
+    };
 
     /**
      * Return a string (HTML) that represents a tag as a <span> element with an anchor
@@ -28,5 +28,29 @@ $(function() {
         return '<a href="/projects/tag/' + 
             tag.id + '"><span class="tag label label-info">' + 
             tag.name + '</span></a> ';
-    }
+    };
+
+    /**
+     * Provide a function used by bootstrap-table to format/display tags in cells
+     * @param allTags array of tag objects containing id and name properties
+     */
+    TechRadar.getTagsFormatter = function(allTags) {
+        return function(value, row, index) {
+            var tagsAsHtml = '';
+            var tagIdsString = row.tags;
+
+            if(tagIdsString) {
+                var tagIds = tagIdsString.split(','); // array of tag IDs
+
+                tagIds.forEach(function(tagId) { 
+                    var tag = allTags.find(function(element) {
+                        return element.id == tagId;
+                    });
+                    tagsAsHtml += TechRadar.convertTagToHtml(tag);
+                });
+            }
+
+            return tagsAsHtml;
+        };
+    };
 });

@@ -168,7 +168,6 @@ ProjectsWebHandler.listForTag = function (req, res) {
             res.render('pages/searchProjectsByTag', {user: req.user, tag: tag});
         }
     });
-
 };
 
 module.exports = ProjectsWebHandler;
