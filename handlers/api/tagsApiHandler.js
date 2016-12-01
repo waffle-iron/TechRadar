@@ -20,6 +20,13 @@ TagsApiHandler.getAllWithOptionalProjectId = function (req, res) {
     });
 };
 
+TagsApiHandler.getForProject = function (req, res) {
+    var projectId = sanitizer(req.params.projectId);
+    tag.getAllForProject(projectId, function (result, error) {
+        apiutils.handleResultSet(res, result, error);
+    });
+};
+
 TagsApiHandler.addTag = function (req, res) {
     var tagName = sanitizer(req.body.name);
 

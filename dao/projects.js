@@ -9,7 +9,8 @@ var Projects = function () {
  * @param done function to call with the results
  */
 Projects.getAll = function (done) {
-    var sql = `SELECT p.*, string_agg(t.name, ', ') AS tags FROM projects AS p
+    var sql = `SELECT p.*, string_agg(t.id::character varying, ', ') AS tags 
+        FROM projects AS p
         LEFT OUTER JOIN tag_project_link tpl ON tpl.projectid=p.id
         LEFT OUTER JOIN tags t ON tpl.tagid=t.id
         GROUP BY p.id`;
@@ -212,6 +213,36 @@ Projects.getAllForTechnology = function (technologyId, done) {
         " ORDER BY p.name ASC";
 
     dbhelper.query(sql, [technologyId],
+        function (result) {
+            done(result);
+        },
+        function (error) {
+            console.log(error);
+            done(null, error);
+        });
+};
+
+/**
+ * Get all projects linked to a given tag 
+ *
+ * @tagId ID of the tag to get the projects for
+ * @param done function to call with the results
+ */
+Projects.getAllForTag = function (tagId, done) {
+    var sql = 
+        `WITH projects_containing_tag AS (
+            SELECT p.* FROM projects p
+            INNER JOIN tag_project_link tpl  
+            ON tpl.tagid=$1 AND tpl.projectid=p.id	
+        )
+        SELECT pct.*, string_agg(t.id::character varying, ', ') AS tags 
+        FROM projects_containing_tag AS pct
+        INNER JOIN tag_project_link tpl ON tpl.projectid=pct.id
+        INNER JOIN tags t ON tpl.tagid=t.id
+        GROUP BY pct.id, pct.name, pct.description
+    ;`;
+
+    dbhelper.query(sql, [tagId],
         function (result) {
             done(result);
         },
