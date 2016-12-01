@@ -147,7 +147,7 @@ Tag.getAllForProject = function (projectId, done) {
             done(null, error);
     });
 };
- 
+
 /**
  * Get tag by its ID
  * @param {Number} tagId ID of the tag

@@ -113,22 +113,28 @@ ProjectsWebHandler.showRadar = function (req, res) {
                 if (error) {
                     res.redirect('/error');
                 } else {
-
-                    // groups technologies by status into the following structure: 
-                    // [{ status: key, technologies: [technologies where status==key]}]
-                    var technologiesInGroups = _.chain(technologies).groupBy('status')
-                        .map(function(technologies, key) {
-                            return {
-                                status: key,
-                                technologies: technologies
-                            };
-                        }).value();
-                        
-                    res.render('pages/projectRadar', {
-                        user: req.user,
-                        project: project,
-                        technologies: technologies, // used by radar.js
-                        technologiesInGroups: technologiesInGroups
+                    tags.getAllForProject(project.id, function(tags, tagsError) {
+                        if(tagsError){
+                            res.redirect('/error');
+                        } else {
+                            // groups technologies by status into the following structure: 
+                            // [{ status: key, technologies: [technologies where status==key]}]
+                            var technologiesInGroups = _.chain(technologies).groupBy('status')
+                                .map(function(technologies, key) {
+                                    return {
+                                        status: key,
+                                        technologies: technologies
+                                    };
+                                }).value();
+                                
+                            res.render('pages/projectRadar', {
+                                user: req.user,
+                                project: project,
+                                technologies: technologies, // used by radar.js
+                                technologiesInGroups: technologiesInGroups,
+                                tags: tags
+                            });
+                        }
                     });
                 }
             });
