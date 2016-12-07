@@ -28,8 +28,9 @@ ApiUtils.handleResultSet = function(res, result, error) {
  * @param result The result returned from the
  * @param error Any errors returned by backend
  * @param suppressSuccessFlash prevents success flash message if set to true
+ * @param suppressErrorFlash prevents default danger flash message if set to true
  */
-ApiUtils.handleResultWithFlash = function(req, res, result, error, suppressSuccessFlash) {
+ApiUtils.handleResultWithFlash = function(req, res, result, error, suppressSuccessFlash, suppressErrorFlash) {
     res.writeHead(200, {"Content-Type": "application/json"});
 
     var data = {};
@@ -41,7 +42,10 @@ ApiUtils.handleResultWithFlash = function(req, res, result, error, suppressSucce
         data.success = true;
     } else {
         console.log(error);
-        req.flash('danger', typeof error === "string" ? error : "Request failed, try again later. If the problem persists contact the administrator");
+        if(!suppressErrorFlash) {
+            req.flash('danger', typeof error === "string" ? error : "Request failed, try again later. If the problem persists contact the administrator");
+        }
+
         // leaving this to be compatible with old handling
         data.error = error;
         data.success = false;

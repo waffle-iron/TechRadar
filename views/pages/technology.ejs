@@ -101,9 +101,11 @@ getBreadcrumb = function () {
             <li class="active"><%= technology.name %></li>
         </ol>
     </div>
+
     <div class="col-md-12">
         <% include ../partials/flash-messages.ejs %>
     </div>
+
     <row>
         <div class="col-md-8" id="commentContainer">
 
@@ -239,21 +241,25 @@ getBreadcrumb = function () {
         $("#usedThisTechnologyPulldown").addClass("disabled");
         var daysAgo = this.getAttribute("value");
         var btnId = this.getAttribute("id");
+        $("#" + btnId).toggleClass('disabled', true);
         var data = {daysAgo: daysAgo};
+
         $.post('/api/technology/<%= technology.id %>/usedThisTechnology',
                 data,
                 function (result) {
                     if (result.success) {
                         enableUsedThisButtons();
                         refreshUsersCountInLastDays(365);
-                        $("#" + btnId).toggleClass('disabled', true);
+                    } else {
+                        $("#" + btnId).toggleClass('disabled', false);
                     }
 
                     TechRadar.viewFlashMessages(result.messages);
                     $("#usedThisTechnologyPulldown").removeClass("disabled");
                 });
+
         <% if (google_id != undefined) { %>
-        ga('send', 'event', 'Technology', 'usedThisTechnology', '<%= technology.name %> - ' + $(this).text());
+            ga('send', 'event', 'Technology', 'usedThisTechnology', '<%= technology.name %> - ' + $(this).text());
         <% } %>
     };
 
@@ -271,6 +277,7 @@ getBreadcrumb = function () {
         $("#votePulldown").addClass("disabled");
         var statusValue = this.getAttribute("value");
         var data = {statusname: statusValue};
+
         $.post('/api/technology/<%= technology.id %>/vote',
                 data,
                 function (result) {
@@ -283,8 +290,9 @@ getBreadcrumb = function () {
                     TechRadar.viewFlashMessages(result.messages);
                     $("#votePulldown").removeClass("disabled");
                 });
+
         <% if (google_id != undefined) { %>
-        ga('send', 'event', 'Technology', 'vote', '<%= technology.name %> - ' + $(this).text());
+            ga('send', 'event', 'Technology', 'vote', '<%= technology.name %> - ' + $(this).text());
         <% } %>
     };
 
@@ -303,7 +311,7 @@ getBreadcrumb = function () {
 
     // Perform initial setup
     enableVoteButtons();
-    $('#voteBtn_<%=technology.vote%>').toggleClass('disabled', true);
+    $('#voteBtn_<%= technology.vote %>').toggleClass('disabled', true);
     enableUsedThisButtons();
     refreshVotes();
     refreshProjectUse();

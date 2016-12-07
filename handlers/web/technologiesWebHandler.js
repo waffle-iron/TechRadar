@@ -25,6 +25,9 @@ TechnologiesWebHandler.edit = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -52,6 +55,9 @@ TechnologiesWebHandler.getVersions = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -77,6 +83,9 @@ TechnologiesWebHandler.getTechnology = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -107,6 +116,9 @@ TechnologiesWebHandler.getUsers = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -135,6 +147,9 @@ TechnologiesWebHandler.getStatusHistory = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -161,6 +176,9 @@ TechnologiesWebHandler.getVotes = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -187,6 +205,9 @@ TechnologiesWebHandler.updateStatus = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -214,6 +235,9 @@ TechnologiesWebHandler.addProject = function (req, res) {
 
     var errors = req.validationErrors();
     if (errors) {
+        errors.forEach(function(e) {
+            req.flash("danger", e.msg);
+        });
         res.redirect('/error');
         return;
     }
@@ -222,6 +246,7 @@ TechnologiesWebHandler.addProject = function (req, res) {
 
     technology.getById(req.user.id, techid, function (technology) {
         if (technology === null) {
+            req.flash("danger", "Technology not found");
             res.redirect('/error');
             return;
         } else {

@@ -26,7 +26,6 @@ $( "form" ).submit(function(event) {
         contentType: "application/json",
         data: JSON.stringify(frmdata),
         success: function(result) {
-            console.log(result);
             if(result.success) {
                 sessionStorage.setItem("messages", JSON.stringify({"success":["User added successfully"]}));
                 location.href = redirectSuccessUrl;

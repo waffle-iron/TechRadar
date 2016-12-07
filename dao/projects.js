@@ -21,9 +21,9 @@ Projects.getAll = function (done) {
         },
         function (error) {
             console.log(error);
-            return done(error, null);
+            return done(null, error);
         });
-}
+};
 
 /**
  * Get a project by ID

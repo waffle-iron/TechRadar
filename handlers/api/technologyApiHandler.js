@@ -65,11 +65,7 @@ TechnologyApiHandler.addTechnology = function (req, res) {
     validationResult = validationResult.valid ? technologyValidator.validateTechnologyLicenceWebsite(technologyLicenceLink) : validationResult;
     
     if (!validationResult.valid) {
-        res.writeHead(200, {"Content-Type": "application/json"});
-        var data = {};
-        data.error = validationResult.message;
-        data.success = false;
-        res.end(JSON.stringify(data));
+        apiutils.handleResultWithFlash(req, res, null, validationResult.message);
         return;
     }
 
@@ -81,7 +77,7 @@ TechnologyApiHandler.addTechnology = function (req, res) {
         sanitizer(req.body.technologyLicence),
         technologyLicenceLink,
         function (result, error) {
-            apiutils.handleResultSet(res, result, error);
+            apiutils.handleResultWithFlash(req, res, result, error);
         });
 };
 
@@ -97,11 +93,7 @@ TechnologyApiHandler.updateTechnology = function (req, res) {
     validationResult = validationResult.valid ? technologyValidator.validateTechnologyLicenceWebsite(technologyLicenceLink) : validationResult;
 
     if (!validationResult.valid) {
-        res.writeHead(200, {"Content-Type": "application/json"});
-        var data = {};
-        data.error = validationResult.message;
-        data.success = false;
-        res.end(JSON.stringify(data));
+        apiutils.handleResultWithFlash(req, res, null, validationResult.message);
         return;
     }
     
@@ -115,7 +107,7 @@ TechnologyApiHandler.updateTechnology = function (req, res) {
         technologyLicenceLink,
 
         function (result, error) {
-            apiutils.handleResultSet(res, result, error);
+            apiutils.handleResultWithFlash(req, res, result, error);
         });
 };
 
@@ -123,7 +115,7 @@ TechnologyApiHandler.deleteTechnology = function (req, res) {
     var data = req.body.id;
 
     technology.delete(data, function (result, error) {
-        apiutils.handleResultSet(res, result, error);
+        apiutils.handleResultWithFlash(req, res, result, error);
     })
 };
 
@@ -174,7 +166,7 @@ TechnologyApiHandler.updateStatus = function (req, res) {
     var tech = sanitizer(req.params.technology);
 
     technology.updateStatus(tech, status, reason, req.user.id, function (result, error) {
-        apiutils.handleResultSet(res, result, error);
+        apiutils.handleResultWithFlash(req, res, result, error);
     });
 };
 
@@ -184,7 +176,7 @@ TechnologyApiHandler.addProject = function (req, res) {
     var versionId = sanitizer(req.body.version);
 
     technology.addProject(technologyId, projectId, versionId, function (result, error) {
-        apiutils.handleResultSet(res, result, error);
+        apiutils.handleResultWithFlash(req, res, result, error);
     });
 };
 

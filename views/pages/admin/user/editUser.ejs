@@ -155,7 +155,6 @@
                 processData: false,
                 data: data,
                 success: function (result) {
-                    console.log(result);
                     if (result.success) {
                         sessionStorage.setItem("messages", JSON.stringify({"success":["User updated successfully"]}));
                         location.href = "/users";
