@@ -1,6 +1,6 @@
 var pg = require('pg');
 var dbhelper = require('../utils/dbhelper.js');
-var User = require('../models/User');
+var User = require('../models/user');
 
 var Users = function () {
 };
