@@ -1,3 +1,4 @@
+![Build Status](https://travis-ci.org/KainosSoftwareLtd/TechRadar.svg?branch=master)
 # [Tech Radar](http://gpimblott.github.io/TechRadar/)
 
 Main documentation is located here -> http://gpimblott.github.io/TechRadar/
