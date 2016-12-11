@@ -3,8 +3,8 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var dbhelper = require('../../utils/dbhelper.js');
-var usersDao = require('../../dao/users');
-var User = require('../../models/user');
+var usersDao = require('../../dao/users.js');
+var User = require('../../models/user.js');
 
 describe("dao/users", function() {
         var dbhelperQuerySpy;
