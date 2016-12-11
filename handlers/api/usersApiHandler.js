@@ -1,5 +1,5 @@
 var users = require('../../dao/users.js');
-var User = require('../../models/User');
+var User = require('../../models/user');
 
 var security = require('../../utils/security.js');
 
