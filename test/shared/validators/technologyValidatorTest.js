@@ -53,14 +53,12 @@ describe("technologyValidator", function() {
             expect(result.message).that.is.a("string").to.eql(nameTooLongErr);
         });
 
-        it("should fail the validation when name contains illegal characters", function() {
-            name = "Name % invalid";
+        it("should allow non-initial characters to be non-alphanumeric", function() {
+            name = "a.!@#$%^&() -+='?/";
             var result = validator.validateTechnologyName(name);
 
-            expect(result.valid).to.be.falsy;
-            expect(result.message).that.is.a("string").to.eql(nameInvalidErr);
+            expect(result.valid).to.be.truthy;
         });
-
         it("should fail the validation when name doesn't start from alphanumeric char", function() {
             name = " Name invalid";
             var result = validator.validateTechnologyName(name);
