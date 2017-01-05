@@ -138,17 +138,21 @@ var TechRadar = function () {
 
         // Setup the secret cookie key
         var cookie_key = process.env.COOKIE_KEY || 'aninsecurecookiekey';
+        
         var sess = {
-            secret: cookie_key,
-            cookie: {}
-         }
+            store: new (require('connect-pg-simple')(session))(),
+            resave: false,
+            saveUninitialized: false,
+            cookie: {},
+            secret: cookie_key
+        }
  
-         if (self.app.get('env')  == 'production') {
+        if (self.app.get('env')  == 'production') {
             self.app.enable('trust proxy', 1); // trusts first proxy - Heroku load balancer
             console.log("In production mode");
             self.app.use(express_enforces_ssl());
             sess.cookie.secure = true;
-         }
+        }
  
         self.app.use(session(sess));
 
