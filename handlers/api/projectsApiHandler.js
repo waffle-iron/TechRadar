@@ -28,7 +28,7 @@ ProjectsApiHandler.getProjectsForTag = function (req, res) {
 
 ProjectsApiHandler.addProject = function (req, res) {
 
-    var projectName = sanitizer(req.body.projectname);
+    var projectName = sanitizer(req.body.projectname.trim());
     var projectDescription = sanitizer(req.body.description);
 
     var validationResult = projectValidator.validateProjectName(projectName);
@@ -110,7 +110,7 @@ ProjectsApiHandler.addTechnologyToProject = function (req, res) {
 ProjectsApiHandler.updateProject = function (req, res) {
     projects.update(
         req.body.projectId,
-        sanitizer(req.body.projectname),
+        sanitizer(req.body.projectname.trim()),
         sanitizer(req.body.description), function (result, error) {
             apiutils.handleResultSet(res, result, error);
         });
