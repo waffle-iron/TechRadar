@@ -18,7 +18,7 @@ SoftwareVersionsApiHandler.getAllVersionsForTechnology = function (req, res) {
 
 SoftwareVersionsApiHandler.addVersion = function (req, res) {
     var techId = sanitizer(req.body.technology);
-    var name = sanitizer(req.body.name);
+    var name = sanitizer(req.body.name.trim());
 
     versionsDao.add(techId, name, function (result, error) {
         apiutils.handleResultSet(res, result, error);
@@ -27,7 +27,7 @@ SoftwareVersionsApiHandler.addVersion = function (req, res) {
 
 SoftwareVersionsApiHandler.updateVersion = function (req, res) {
     var versionId = sanitizer(req.body.version);
-    var name = sanitizer(req.body.name);
+    var name = sanitizer(req.body.name.trim());
 
     req.checkBody('version', 'Invalid version ID').isInt();
     req.checkBody('name', 'Empty name').notEmpty();

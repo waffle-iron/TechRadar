@@ -78,6 +78,14 @@ describe("Software versions api handler", function() {
             expect(addVersionSpy.getCalls()[0].args[0]).that.is.a('string').to.equal(req.body.technology);
             expect(addVersionSpy.getCalls()[0].args[1]).that.is.a('string').to.equal(req.body.name);
         });
+
+        it("should trim whitespace on both ends of a name", function() {
+            req.body.name = "     whitespace test    ";
+            apiVersions.addVersion(req, res);
+
+            sinon.assert.calledOnce(versionsDao.add);
+            expect(addVersionSpy.getCalls()[0].args[1]).that.is.a('string').to.equal("whitespace test");
+        });
         
         it("should generate a response based on dao results", function() {
             apiVersions.addVersion(req, res);
@@ -118,6 +126,14 @@ describe("Software versions api handler", function() {
             sinon.assert.calledOnce(versionsDao.update);
             expect(updateVersionSpy.getCalls()[0].args[0]).that.is.a('string').to.equal(req.body.version);
             expect(updateVersionSpy.getCalls()[0].args[1]).that.is.a('string').to.equal(req.body.name);
+        });
+
+        it("should trim whitespace on both ends of a name", function() {
+            req.body.name = "     whitespace test    ";
+            apiVersions.updateVersion(req, res);
+
+            sinon.assert.calledOnce(versionsDao.update);
+            expect(updateVersionSpy.getCalls()[0].args[1]).that.is.a('string').to.equal("whitespace test");
         });
 
         it("should not update when validation fails", function() {

@@ -20,7 +20,7 @@ CategoriesApiHandler.getCategories = function (req, res) {
 CategoriesApiHandler.addCategory = function (app) {
     return function (req, res) {
         category.add(
-            sanitizer( req.body.name ),
+            sanitizer( req.body.name.trim() ),
             sanitizer( req.body.description ),
             function (result , error ) {
                 if(result) {

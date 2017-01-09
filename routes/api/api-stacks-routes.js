@@ -42,7 +42,7 @@ ApiStackRoutes.createRoutes = function (self) {
         function (req, res) {
 
             stacks.add(
-                sanitizer( req.body.name ),
+                sanitizer( req.body.name.trim() ),
                 sanitizer( req.body.description ),
 
                 function ( result , error ) {
