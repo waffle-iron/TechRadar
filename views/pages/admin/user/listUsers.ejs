@@ -88,7 +88,10 @@
         showRefresh: true,
         showPaginationSwitch: true,
         pagination: true,
-        pageSize: page_size, // declared and set in stickyTablePageSize.js 
+        pageSize: page_size, // declared and set in stickyTablePageSize.js
+        responseHandler: function(res) {
+            return res.result;
+        },
         columns: [{
             field:'state',
             checkbox:'true'
@@ -100,6 +103,7 @@
             field: 'username',
             title: 'Username',
             sortable: true,
+            searchFormatter: false,
             formatter: operateFormatter
         }, {
             field: 'displayname',

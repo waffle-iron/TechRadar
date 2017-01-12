@@ -29,10 +29,16 @@ ProjectsWebHandler.reassignTags = function (req, res) {
         }
         tags.getAllWithOptionalProjectId(req.params.projectId, function (tags, tagsError) {
             if (tagsError) {
+                req.flash("danger", "Error while retrieving project tags for project id: " + req.params.projectId);
                 res.redirect('/error');
                 return;
             } else {
-                res.render('pages/reassignTags', {user: req.user, tags: tags, project: project});
+                res.render('pages/reassignTags', {
+                    user: req.user,
+                    tags: tags,
+                    project: project,
+                    messages: req.flash()
+                });
             }
         });
     });
@@ -40,7 +46,11 @@ ProjectsWebHandler.reassignTags = function (req, res) {
 
 ProjectsWebHandler.editTags = function (req, res) {
     tags.getAll(function (tags) {
-        res.render('pages/editTags', {user: req.user, tags: tags});
+        res.render('pages/editTags', {
+            user: req.user,
+            tags: tags,
+            messages: req.flash()
+        });
     });
 };
 

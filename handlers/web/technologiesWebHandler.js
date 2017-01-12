@@ -44,7 +44,8 @@ TechnologiesWebHandler.edit = function (req, res) {
                 {
                     technology: value,
                     user: req.user,
-                    statuses: statuses
+                    statuses: statuses,
+                    messages: req.flash()
                 });
         }
     });
@@ -72,7 +73,8 @@ TechnologiesWebHandler.getVersions = function (req, res) {
             res.render('pages/editVersions',
                 {
                     technology: value,
-                    user: req.user
+                    user: req.user,
+                    messages: req.flash()
                 });
         }
     });
@@ -135,7 +137,8 @@ TechnologiesWebHandler.getUsers = function (req, res) {
                     {
                         technology: value,
                         user: req.user,
-                        techUsers: users
+                        techUsers: users,
+                        messages: req.flash()
                     });
             }
         });
@@ -166,7 +169,8 @@ TechnologiesWebHandler.getStatusHistory = function (req, res) {
         res.render('pages/statushistory',
             {
                 technology: value,
-                user: req.user
+                user: req.user,
+                messages: req.flash()
             });
     });
 };
@@ -195,7 +199,8 @@ TechnologiesWebHandler.getVotes = function (req, res) {
         res.render('pages/votehistory',
             {
                 technology: value,
-                user: req.user
+                user: req.user,
+                messages: req.flash()
             });
     });
 };
@@ -225,7 +230,8 @@ TechnologiesWebHandler.updateStatus = function (req, res) {
             {
                 technology: value,
                 user: req.user,
-                statuses: statuses
+                statuses: statuses,
+                messages: req.flash()
             });
     });
 };
@@ -261,7 +267,8 @@ TechnologiesWebHandler.addProject = function (req, res) {
                                 return linkedProjects.map(function (linkedEl) {
                                         return linkedEl.id
                                     }).indexOf(e.id) === -1;
-                            })
+                            }),
+                            messages: req.flash()
                         });
                 });
             });

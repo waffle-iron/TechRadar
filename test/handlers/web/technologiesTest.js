@@ -88,7 +88,7 @@ describe("Technologies web handler", function() {
         
         it("should NOT render edit technology page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.edit(req, res);
 
@@ -110,7 +110,7 @@ describe("Technologies web handler", function() {
 
         it("should redirect to the error page if technology was not found", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.edit(req, res);
 
@@ -135,7 +135,7 @@ describe("Technologies web handler", function() {
         
         it("should NOT render editVersions page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getVersions(req, res);
 
@@ -144,7 +144,7 @@ describe("Technologies web handler", function() {
 
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getVersions(req, res);
 
@@ -181,7 +181,7 @@ describe("Technologies web handler", function() {
 
         it("should NOT render technology page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getTechnology(req, res);
 
@@ -190,7 +190,7 @@ describe("Technologies web handler", function() {
         
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getTechnology(req, res);
 
@@ -239,7 +239,7 @@ describe("Technologies web handler", function() {
 
         it("should NOT render technologyUsers page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getUsers(req, res);
 
@@ -259,7 +259,7 @@ describe("Technologies web handler", function() {
         
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getUsers(req, res);
 
@@ -309,7 +309,7 @@ describe("Technologies web handler", function() {
 
         it("should NOT render status history page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getStatusHistory(req, res);
 
@@ -318,7 +318,7 @@ describe("Technologies web handler", function() {
 
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getStatusHistory(req, res);
 
@@ -356,7 +356,7 @@ describe("Technologies web handler", function() {
 
         it("should NOT render vote history page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getVotes(req, res);
 
@@ -365,7 +365,7 @@ describe("Technologies web handler", function() {
 
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.getVotes(req, res);
 
@@ -403,7 +403,7 @@ describe("Technologies web handler", function() {
 
         it("should NOT render updateStatus page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.updateStatus(req, res);
 
@@ -412,7 +412,7 @@ describe("Technologies web handler", function() {
 
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.updateStatus(req, res);
 
@@ -464,7 +464,7 @@ describe("Technologies web handler", function() {
 
         it("should NOT render addProject page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.addProject(req, res);
 
@@ -473,7 +473,7 @@ describe("Technologies web handler", function() {
 
         it("should redirect to the error page if validation failed", function() {
             req.validationErrors.restore(); // get rid of the default stub created in beforeEach()
-            sinon.stub(req, 'validationErrors').returns(true);
+            sinon.stub(req, 'validationErrors').returns(['error']);
 
             webTechnologies.addProject(req, res);
 

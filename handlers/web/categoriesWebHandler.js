@@ -23,6 +23,7 @@ CategoriesWebHandler.technologiesForCategory = function (req, res) {
     technology.getAllForCategory(cname.toLowerCase(), function (values) {
 
         if (values == null) {
+            req.flash("danger", "No technologies found for category " + cname);
             res.redirect('/error');
             return;
         }

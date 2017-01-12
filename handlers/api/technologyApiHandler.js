@@ -220,8 +220,7 @@ TechnologyApiHandler.removeProject = function (req, res) {
     var projectIds = req.body.projects;
 
     technology.removeProjects(technologyId, projectIds, function (result, error) {
-        res.writeHead(200, {"Content-Type": "application/json"});
-        res.end(JSON.stringify(result));
+        apiutils.handleResultWithFlash(req, res, result, error);
     });
 };
 
