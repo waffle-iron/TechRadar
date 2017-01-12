@@ -56,7 +56,7 @@ TechnologyApiHandler.getTechnologies = function (req, res) {
 
 
 TechnologyApiHandler.addTechnology = function (req, res) {
-    var technologyName = sanitizer(req.body.technologyName);
+    var technologyName = sanitizer(req.body.technologyName.trim());
     var technologyWebsite = sanitizer(req.body.technologyWebsite);
     var technologyLicenceLink = sanitizer(req.body.technologyLicenceLink);
 
@@ -84,7 +84,7 @@ TechnologyApiHandler.addTechnology = function (req, res) {
 TechnologyApiHandler.updateTechnology = function (req, res) {
     var techid = sanitizer(req.params.technology);
 
-    var technologyName = sanitizer(req.body.name);
+    var technologyName = sanitizer(req.body.name.trim());
     var technologyWebsite = sanitizer(req.body.website);
     var technologyLicenceLink = sanitizer(req.body.technologyLicenceLink);
 
@@ -99,8 +99,8 @@ TechnologyApiHandler.updateTechnology = function (req, res) {
     
     technology.update(
         techid,
-        sanitizer(technologyName),
-        sanitizer(technologyWebsite),
+        technologyName,
+        technologyWebsite,
         sanitizer(req.body.category),
         sanitizer(req.body.description),
         sanitizer(req.body.technologyLicence),

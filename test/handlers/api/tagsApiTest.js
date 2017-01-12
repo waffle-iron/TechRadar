@@ -149,6 +149,14 @@ describe("Tags api handler", function() {
             expect(addSpy.getCalls()[0].args[0]).to.equal(req.body.name);
         });
 
+        it("should trim whitespace on both ends of a name", function() {
+            req.body.name = "    whitespace test      ";
+            apiTags.addTag(req, res);
+
+            sinon.assert.calledOnce(tagsDao.add);
+            expect(addSpy.getCalls()[0].args[0]).to.equal("whitespace test");
+        });
+
         it("should pass the results to the API handler", function() {
             apiTags.addTag(req, res);
 
@@ -281,6 +289,15 @@ describe("Tags api handler", function() {
             expect(updateSpy.getCalls()[0].args[0]).to.equal(req.body.tag);
             expect(updateSpy.getCalls()[0].args[1]).to.equal(req.body.name);
         });
+
+        it("should trim whitespace on both ends of a name", function() {
+            req.body.name = "   whitespace test     ";
+            apiTags.updateTag(req, res);
+
+            sinon.assert.calledOnce(tagsDao.update);
+            expect(updateSpy.getCalls()[0].args[1]).to.equal("whitespace test");
+        });
+
 
         it("should pass the results to the API handler", function() {
             apiTags.updateTag(req, res);

@@ -28,7 +28,7 @@ TagsApiHandler.getForProject = function (req, res) {
 };
 
 TagsApiHandler.addTag = function (req, res) {
-    var tagName = sanitizer(req.body.name);
+    var tagName = sanitizer(req.body.name.trim());
 
     var validationResult = tagValidator.validateTagName(tagName);
     if (!validationResult.valid) {
@@ -62,7 +62,7 @@ TagsApiHandler.reassignTagsToProject = function (req, res) {
 
 TagsApiHandler.updateTag = function (req, res) {
     var tagId = sanitizer(req.body.tag);
-    var tagName = sanitizer(req.body.name);
+    var tagName = sanitizer(req.body.name.trim());
 
     var validationResult = tagValidator.validateTagName(tagName);
     if (!validationResult.valid) {

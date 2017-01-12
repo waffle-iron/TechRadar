@@ -81,6 +81,14 @@ describe("Categories api handler", function() {
             expect(addCategorySpy.getCalls()[0].args[1]).that.is.a('string').to.equal(req.body.description);
         });
 
+        it("should trim whitespace on both ends of a name", function() {
+            req.body.name = "    whitespace test   ";
+            apiCategories.addCategory(app)(req, res);
+
+            sinon.assert.calledOnce(category.add);
+            expect(addCategorySpy.getCalls()[0].args[0]).that.is.a('string').to.equal("whitespace test");
+        });
+
         it("should generate response based on dao results", function() {
             apiCategories.addCategory(app)(req, res);
 
