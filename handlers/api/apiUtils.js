@@ -25,7 +25,7 @@ ApiUtils.handleResultSet = function(res, result, error) {
  *
  * @param req The request object
  * @param res The response object
- * @param result The result returned from the
+ * @param result The result returned from the backend
  * @param error Any errors returned by backend
  * @param suppressSuccessFlash prevents success flash message if set to true
  * @param suppressErrorFlash prevents default danger flash message if set to true

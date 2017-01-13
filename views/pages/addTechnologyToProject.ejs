@@ -151,9 +151,9 @@
                 var response = JSON.parse(result.responseText);
                 if (response.success) {
                     sessionStorage.setItem("messages", JSON.stringify({"success":["Technologies added successfully"]}));
-                    location.href = "/project/<%=project.id%>";
+                    location.href = "/project/<%= project.id %>";
                 } else {
-                    TechRadar.viewFlashMessages({"danger":["There was an error adding Technologies"]});
+                    TechRadar.viewFlashMessages({"danger":["There was an error adding technologies"]});
                 }
                 $addBtn.removeClass("disabled");
             }
