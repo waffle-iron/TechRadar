@@ -441,11 +441,16 @@ describe("Technologies web handler", function() {
 
     describe("addProject", function() {
         beforeEach(function() {
+            var stubbedArray = new Array()
+            sinon.stub(stubbedArray, 'map').returns(stubbedArray)
+            sinon.stub(stubbedArray, 'filter').returns(stubbedArray)
+            sinon.stub(stubbedArray, 'sort').returns(stubbedArray)
+
             sinon.stub(projectsDao, 'getAllForTechnology', function(techid, cb){
-                cb({});
+                cb(stubbedArray);
             });
             sinon.stub(projectsDao, 'getAll', function(cb){
-                cb({filter: sinon.stub()});
+                cb(stubbedArray);
             });
         });
 

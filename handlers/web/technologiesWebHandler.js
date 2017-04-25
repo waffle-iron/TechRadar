@@ -227,15 +227,21 @@ TechnologiesWebHandler.addProject = function (req, res) {
             project.getAllForTechnology(techid, function (linkedProjects) {
                 
                 project.getAll(function (allProjects) {
+                    linkedProjectIds = linkedProjects.map(function(l) { return l.id })
+                    unassignedProjects = allProjects.filter(function(e) { 
+                        return linkedProjectIds.indexOf(e.id) === -1;
+                    }).sort(function(a, b) {
+                        var nameA = a.toLower()
+                        var nameB = b.toLower()
+                        if(nameA < nameB) return -1;
+                        if(nameA > nameB) return 1;
+                        return 0;
+                    });
                     res.render('pages/addProjectToTechnology',
                         {
                             technology: technology,
                             user: req.user,
-                            unassignedProjects: allProjects.filter(function (e) {
-                                return linkedProjects.map(function (linkedEl) {
-                                        return linkedEl.id
-                                    }).indexOf(e.id) === -1;
-                            })
+                            unassignedProjects: unassignedProjects
                         });
                 });
             });
